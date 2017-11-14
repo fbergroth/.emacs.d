@@ -1,0 +1,262 @@
+[borg]
+	pushDefault = locutus
+	collective = emacsg
+[submodule "add-node-modules-path"]
+	path = lib/add-node-modules-path
+	url = git@github.com:codesuki/add-node-modules-path.git
+[submodule "alert"]
+	path = lib/alert
+	url = git@github.com:jwiegley/alert.git
+[submodule "anaconda-mode"]
+	path = lib/anaconda-mode
+	url = git@github.com:proofit404/anaconda-mode.git
+[submodule "anzu"]
+	path = lib/anzu
+	url = git@github.com:syohex/emacs-anzu.git
+[submodule "auto-compile"]
+	path = lib/auto-compile
+	url = git@github.com:emacscollective/auto-compile.git
+[submodule "borg"]
+	path = lib/borg
+	url = git@github.com:emacscollective/borg.git
+[submodule "cl-lib-highlight"]
+	path = lib/cl-lib-highlight
+	url = git@github.com:skeeto/cl-lib-highlight.git
+[submodule "closql"]
+	path = lib/closql
+	url = git@github.com:emacscollective/closql.git
+[submodule "company"]
+	path = lib/company
+	url = git@github.com:company-mode/company-mode.git
+[submodule "company-anaconda"]
+	path = lib/company-anaconda
+	url = git@github.com:proofit404/company-anaconda.git
+[submodule "company-quickhelp"]
+	path = lib/company-quickhelp
+	url = git@github.com:expez/company-quickhelp.git
+[submodule "company-shell"]
+	path = lib/company-shell
+	url = git@github.com:Alexander-Miller/company-shell.git
+[submodule "counsel-projectile"]
+	path = lib/counsel-projectile
+	url = git@github.com:ericdanan/counsel-projectile.git
+[submodule "dash"]
+	path = lib/dash
+	url = git@github.com:magnars/dash.el.git
+	no-makeinfo = dash-template.texi
+[submodule "diff-hl"]
+	path = lib/diff-hl
+	url = git@github.com:dgutov/diff-hl.git
+[submodule "diredfl"]
+	path = lib/diredfl
+	url = git@github.com:purcell/diredfl.git
+[submodule "dockerfile-mode"]
+	path = lib/dockerfile-mode
+	url = git@github.com:spotify/dockerfile-mode.git
+[submodule "doom-themes"]
+	path = lib/doom-themes
+	url = git@github.com:hlissner/emacs-doom-themes.git
+[submodule "elisp-slime-nav"]
+	path = lib/elisp-slime-nav
+	url = git@github.com:purcell/elisp-slime-nav.git
+[submodule "emacsql"]
+	path = lib/emacsql
+	url = git@github.com:skeeto/emacsql.git
+	no-byte-compile = emacsql-pg.el
+[submodule "epkg"]
+	path = lib/epkg
+	url = git@github.com:emacscollective/epkg.git
+[submodule "eros"]
+	path = lib/eros
+	url = git@github.com:xiongtx/eros.git
+[submodule "evil"]
+	path = lib/evil
+	url = git@github.com:emacs-evil/evil.git
+[submodule "evil-anzu"]
+	path = lib/evil-anzu
+	url = git@github.com:syohex/emacs-evil-anzu.git
+[submodule "evil-collection"]
+	path = lib/evil-collection
+	url = git@github.com:jojojames/evil-collection.git
+[submodule "evil-ediff"]
+	path = lib/evil-ediff
+	url = git@github.com:emacs-evil/evil-ediff.git
+[submodule "evil-magit"]
+	path = lib/evil-magit
+	url = git@github.com:emacs-evil/evil-magit.git
+[submodule "evil-multiedit"]
+	path = lib/evil-multiedit
+	url = git@github.com:hlissner/evil-multiedit.git
+[submodule "evil-surround"]
+	path = lib/evil-surround
+	url = git@github.com:emacs-evil/evil-surround.git
+[submodule "evil-visualstar"]
+	path = lib/evil-visualstar
+	url = git@github.com:bling/evil-visualstar.git
+[submodule "exec-path-from-shell"]
+	path = lib/exec-path-from-shell
+	url = git@github.com:purcell/exec-path-from-shell.git
+[submodule "eyebrowse"]
+	path = lib/eyebrowse
+	url = git@github.com:wasamasa/eyebrowse.git
+[submodule "f"]
+	path = lib/f
+	url = git@github.com:rejeep/f.el.git
+[submodule "finalize"]
+	path = lib/finalize
+	url = git@github.com:skeeto/elisp-finalize.git
+[submodule "flx"]
+	path = lib/flx
+	url = git@github.com:lewang/flx.git
+[submodule "flycheck"]
+	path = lib/flycheck
+	url = git@github.com:flycheck/flycheck.git
+[submodule "flycheck-cask"]
+	path = lib/flycheck-cask
+	url = git@github.com:flycheck/flycheck-cask.git
+[submodule "flycheck-package"]
+	path = lib/flycheck-package
+	url = git@github.com:purcell/flycheck-package.git
+[submodule "flycheck-pos-tip"]
+	path = lib/flycheck-pos-tip
+	url = git@github.com:flycheck/flycheck-pos-tip.git
+[submodule "flyspell-correct"]
+	path = lib/flyspell-correct
+	url = git@github.com:d12frosted/flyspell-correct.git
+[submodule "general"]
+	path = lib/general
+	url = git@github.com:noctuid/general.el.git
+[submodule "git-modes"]
+	path = lib/git-modes
+	url = git@github.com:magit/git-modes.git
+[submodule "highlight-escape-sequences"]
+	path = lib/highlight-escape-sequences
+	url = git@github.com:dgutov/highlight-escape-sequences.git
+[submodule "highlight-numbers"]
+	path = lib/highlight-numbers
+	url = git@github.com:Fanael/highlight-numbers.git
+[submodule "hl-todo"]
+	path = lib/hl-todo
+	url = git@github.com:tarsius/hl-todo.git
+[submodule "hydra"]
+	path = lib/hydra
+	url = git@github.com:abo-abo/hydra.git
+[submodule "iedit"]
+	path = lib/iedit
+	url = git@github.com:victorhge/iedit.git
+[submodule "ivy"]
+	path = lib/ivy
+	url = git@github.com:abo-abo/swiper.git
+[submodule "js2-mode"]
+	path = lib/js2-mode
+	url = git@github.com:mooz/js2-mode.git
+[submodule "json-mode"]
+	path = lib/json-mode
+	url = git@github.com:joshwnj/json-mode.git
+[submodule "json-reformat"]
+	path = lib/json-reformat
+	url = git@github.com:gongo/json-reformat.git
+[submodule "json-snatcher"]
+	path = lib/json-snatcher
+	url = git@github.com:Sterlingg/json-snatcher.git
+[submodule "less-css-mode"]
+	path = lib/less-css-mode
+	url = git@github.com:purcell/less-css-mode.git
+[submodule "macrostep"]
+	path = lib/macrostep
+	url = git@github.com:joddie/macrostep.git
+[submodule "magit"]
+	path = lib/magit
+	url = git@github.com:magit/magit.git
+	info-path = Documentation
+[submodule "markdown-mode"]
+	path = lib/markdown-mode
+	url = git@github.com:jrblevin/markdown-mode.git
+[submodule "merlin"]
+	path = lib/merlin
+	url = git@github.com:ocaml/merlin.git
+	load-path = emacs
+[submodule "no-littering"]
+	path = lib/no-littering
+	url = git@github.com:emacscollective/no-littering.git
+[submodule "package-lint"]
+	path = lib/package-lint
+	url = git@github.com:purcell/package-lint.git
+[submodule "packed"]
+	path = lib/packed
+	url = git@github.com:emacscollective/packed.git
+[submodule "page-break-lines"]
+	path = lib/page-break-lines
+	url = git@github.com:purcell/page-break-lines.git
+[submodule "parent-mode"]
+	path = lib/parent-mode
+	url = git@github.com:Fanael/parent-mode.git
+[submodule "pip-requirements"]
+	path = lib/pip-requirements
+	url = git@github.com:Wilfred/pip-requirements.el.git
+[submodule "pos-tip"]
+	path = lib/pos-tip
+	url = git@github.com:pitkali/pos-tip.git
+[submodule "powerline"]
+	path = lib/powerline
+	url = git@github.com:milkypostman/powerline.git
+[submodule "prettier-js"]
+	path = lib/prettier-js
+	url = git@github.com:prettier/prettier-emacs.git
+[submodule "projectile"]
+	path = lib/projectile
+	url = git@github.com:bbatsov/projectile.git
+[submodule "projectile-git-autofetch"]
+	path = lib/projectile-git-autofetch
+	url = git@github.com:andrmuel/projectile-git-autofetch.git
+[submodule "py-isort"]
+	path = lib/py-isort
+	url = git@github.com:paetzke/py-isort.el.git
+[submodule "pyenv-mode"]
+	path = lib/pyenv-mode
+	url = git@github.com:proofit404/pyenv-mode.git
+[submodule "pythonic"]
+	path = lib/pythonic
+	url = git@github.com:proofit404/pythonic.git
+[submodule "reason-mode"]
+	path = lib/reason-mode
+	url = git@github.com:reasonml-editor/reason-mode.git
+[submodule "restart-emacs"]
+	path = lib/restart-emacs
+	url = git@github.com:iqbalansari/restart-emacs.git
+[submodule "s"]
+	path = lib/s
+	url = git@github.com:magnars/s.el.git
+[submodule "smex"]
+	path = lib/smex
+	url = git@github.com:nonsequitur/smex.git
+[submodule "solaire-mode"]
+	path = lib/solaire-mode
+	url = git@github.com:hlissner/emacs-solaire-mode.git
+[submodule "spaceline"]
+	path = lib/spaceline
+	url = git@github.com:TheBB/spaceline.git
+[submodule "undo-tree"]
+	path = lib/undo-tree
+	url = http://www.dr-qubit.org/git/undo-tree.git
+[submodule "unfill"]
+	path = lib/unfill
+	url = git@github.com:purcell/unfill.git
+[submodule "use-package"]
+	path = lib/use-package
+	url = git@github.com:jwiegley/use-package.git
+[submodule "web-mode"]
+	path = lib/web-mode
+	url = git@github.com:fxbois/web-mode.git
+[submodule "which-key"]
+	path = lib/which-key
+	url = git@github.com:justbur/emacs-which-key.git
+[submodule "whitespace-cleanup-mode"]
+	path = lib/whitespace-cleanup-mode
+	url = git@github.com:purcell/whitespace-cleanup-mode.git
+[submodule "with-editor"]
+	path = lib/with-editor
+	url = git@github.com:magit/with-editor.git
+[submodule "yaml-mode"]
+	path = lib/yaml-mode
+	url = git@github.com:yoshiki/yaml-mode.git
