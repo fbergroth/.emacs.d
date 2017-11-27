@@ -360,6 +360,7 @@
 
   :init (ivy-mode)
   :config
+  (define-key ivy-minibuffer-map (kbd "C-w") #'ivy-backward-kill-word)
   (setq ivy-use-virtual-buffers t
         ivy-re-builders-alist '((t . ivy--regex-fuzzy))))
 
