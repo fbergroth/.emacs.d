@@ -172,6 +172,9 @@
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
+[submodule "material-theme"]
+	path = lib/material-theme
+	url = git@github.com:cpaulik/emacs-material-theme.git
 [submodule "merlin"]
 	path = lib/merlin
 	url = git@github.com:ocaml/merlin.git

@@ -511,7 +511,12 @@
 
 (use-package pip-requirements)
 
+(use-package material-theme
+  :init
+  (load-theme 'material t))
+
 (use-package doom-one-theme
+  :disabled t
   :init
   (custom-set-variables '(doom-one-brighter-comments t))
   (load-theme 'doom-one 'no-confirm))
