@@ -271,10 +271,7 @@
   :diminish flycheck-mode
   :init
   (defun pkg-info-version-info (_arg) "hack")
-  (global-flycheck-mode)
-  :config
-  (evil-set-initial-state 'flycheck-error-list-mode 'motion)
-  (evil-make-overriding-map flycheck-error-list-mode-map 'motion))
+  (global-flycheck-mode))
 
 
 (use-package flycheck-pos-tip
