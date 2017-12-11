@@ -356,7 +356,7 @@
 (use-package flyspell-correct-ivy
   :general
   (:keymaps 'flyspell-mode-map
-            "C-;" 'flyspell-correct-previous-word-generic))
+            "C-;" 'flyspell-correct-previous))
 
 (use-package git-commit
   :hook (git-commit-setup . git-commit-turn-on-flyspell))
