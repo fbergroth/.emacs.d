@@ -616,6 +616,11 @@
   :config
   (which-key-mode))
 
+(use-package whitespace
+  :hook (prog-mode . whitespace-mode)
+  :config
+  (setq whitespace-style '(face tab-mark tabs trailing)))
+
 (use-package whitespace-cleanup-mode
   :init (global-whitespace-cleanup-mode)
   :diminish whitespace-cleanup-mode)
@@ -629,11 +634,6 @@
 
 (use-package yaml-mode
   :defer t)
-
-(use-package whitespace
-  :hook (prog-mode . whitespace-mode)
-  :config
-  (setq whitespace-style '(face tab-mark tabs trailing)))
 
 (progn ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file
