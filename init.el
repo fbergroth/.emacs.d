@@ -364,6 +364,11 @@
 (use-package help
   :config (temp-buffer-resize-mode))
 
+(use-package helpful
+  :general
+  (nmap emacs-lisp-mode-map
+        "K" 'helpful-at-point))
+
 (use-package highlight-escape-sequences
   :disabled t
   :config
