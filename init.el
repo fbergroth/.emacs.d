@@ -150,6 +150,7 @@
 
 (use-package company-quickhelp
   :after company
+  :disabled t
   :init
   (company-quickhelp-mode 1)
   (define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin))
@@ -190,8 +191,7 @@
   :general
   (my-leader "*" 'counsel-projectile-rg)
   :init
-  (let ((inhibit-message t))
-    (counsel-projectile-on))
+  (counsel-projectile-mode)
   :config
   (setq counsel-projectile-rg-initial-input '(ivy-thing-at-point))
   (define-key projectile-mode-map [remap projectile-ag] #'counsel-projectile-rg)
@@ -267,6 +267,7 @@
   (evil-want-C-i-jump nil)
   (evil-want-C-u-scroll t)
   (evil-want-C-w-in-emacs-state t)
+  (evil-want-integration nil)
   :init (evil-mode)
   :config
   (define-key evil-normal-state-map (kbd "M-.") nil))
