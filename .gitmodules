@@ -16,6 +16,9 @@
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = git@github.com:emacscollective/auto-compile.git
+[submodule "blacken"]
+	path = lib/blacken
+	url = git@github.com:proofit404/blacken.git
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
@@ -218,6 +221,9 @@
 [submodule "pip-requirements"]
 	path = lib/pip-requirements
 	url = git@github.com:Wilfred/pip-requirements.el.git
+[submodule "pipenv"]
+	path = lib/pipenv
+	url = git@github.com:pwalsh/pipenv.el.git
 [submodule "pos-tip"]
 	path = lib/pos-tip
 	url = git@github.com:pitkali/pos-tip.git
