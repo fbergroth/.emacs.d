@@ -1,15 +1,15 @@
 [borg]
 	pushDefault = locutus
 	collective = emacsg
-[submodule "add-node-modules-path"]
-	path = lib/add-node-modules-path
-	url = git@github.com:codesuki/add-node-modules-path.git
 [submodule "alert"]
 	path = lib/alert
 	url = git@github.com:jwiegley/alert.git
-[submodule "anaconda-mode"]
-	path = lib/anaconda-mode
-	url = git@github.com:proofit404/anaconda-mode.git
+[submodule "all-the-icons"]
+	path = lib/all-the-icons
+	url = git@github.com:domtronn/all-the-icons.el.git
+[submodule "annalist"]
+	path = lib/annalist
+	url = git@github.com:noctuid/annalist.el.git
 [submodule "anzu"]
 	path = lib/anzu
 	url = git@github.com:syohex/emacs-anzu.git
@@ -31,9 +31,6 @@
 [submodule "company"]
 	path = lib/company
 	url = git@github.com:company-mode/company-mode.git
-[submodule "company-anaconda"]
-	path = lib/company-anaconda
-	url = git@github.com:proofit404/company-anaconda.git
 [submodule "company-quickhelp"]
 	path = lib/company-quickhelp
 	url = git@github.com:expez/company-quickhelp.git
@@ -47,9 +44,15 @@
 	path = lib/dash
 	url = git@github.com:magnars/dash.el.git
 	no-makeinfo = dash-template.texi
+[submodule "default-text-scale"]
+	path = lib/default-text-scale
+	url = git@github.com:purcell/default-text-scale.git
 [submodule "diff-hl"]
 	path = lib/diff-hl
 	url = git@github.com:dgutov/diff-hl.git
+[submodule "diminish"]
+	path = lib/diminish
+	url = git@github.com:myrjola/diminish.el.git
 [submodule "dired-du"]
 	path = lib/dired-du
 	url = git@github.com:emacsmirror/dired-du.git
@@ -59,9 +62,15 @@
 [submodule "dockerfile-mode"]
 	path = lib/dockerfile-mode
 	url = git@github.com:spotify/dockerfile-mode.git
+[submodule "doom-modeline"]
+	path = lib/doom-modeline
+	url = git@github.com:seagle0128/doom-modeline.git
 [submodule "doom-themes"]
 	path = lib/doom-themes
 	url = git@github.com:hlissner/emacs-doom-themes.git
+[submodule "eglot"]
+	path = lib/eglot
+	url = git@github.com:joaotavora/eglot.git
 [submodule "elisp-refs"]
 	path = lib/elisp-refs
 	url = git@github.com:Wilfred/refs.el.git
@@ -129,6 +138,9 @@
 [submodule "flycheck-pos-tip"]
 	path = lib/flycheck-pos-tip
 	url = git@github.com:flycheck/flycheck-pos-tip.git
+[submodule "flymake-diagnostic-at-point"]
+	path = lib/flymake-diagnostic-at-point
+	url = git@github.com:meqif/flymake-diagnostic-at-point.git
 [submodule "flyspell-correct"]
 	path = lib/flyspell-correct
 	url = git@github.com:d12frosted/flyspell-correct.git
@@ -162,6 +174,12 @@
 [submodule "ivy"]
 	path = lib/ivy
 	url = git@github.com:abo-abo/swiper.git
+[submodule "ivy-rich"]
+	path = lib/ivy-rich
+	url = git@github.com:Yevgnen/ivy-rich.git
+[submodule "ivy-xref"]
+	path = lib/ivy-xref
+	url = git@github.com:alexmurray/ivy-xref.git
 [submodule "js2-mode"]
 	path = lib/js2-mode
 	url = git@github.com:mooz/js2-mode.git
@@ -199,10 +217,9 @@
 [submodule "material-theme"]
 	path = lib/material-theme
 	url = git@github.com:cpaulik/emacs-material-theme.git
-[submodule "merlin"]
-	path = lib/merlin
-	url = git@github.com:ocaml/merlin.git
-	load-path = emacs
+[submodule "memoize"]
+	path = lib/memoize
+	url = git@github.com:skeeto/emacs-memoize.git
 [submodule "no-littering"]
 	path = lib/no-littering
 	url = git@github.com:emacscollective/no-littering.git
@@ -224,12 +241,12 @@
 [submodule "pipenv"]
 	path = lib/pipenv
 	url = git@github.com:pwalsh/pipenv.el.git
+[submodule "popup"]
+	path = lib/popup
+	url = git@github.com:auto-complete/popup-el.git
 [submodule "pos-tip"]
 	path = lib/pos-tip
 	url = git@github.com:pitkali/pos-tip.git
-[submodule "powerline"]
-	path = lib/powerline
-	url = git@github.com:milkypostman/powerline.git
 [submodule "prettier-js"]
 	path = lib/prettier-js
 	url = git@github.com:prettier/prettier-emacs.git
@@ -245,30 +262,30 @@
 [submodule "pyenv-mode"]
 	path = lib/pyenv-mode
 	url = git@github.com:proofit404/pyenv-mode.git
-[submodule "pythonic"]
-	path = lib/pythonic
-	url = git@github.com:proofit404/pythonic.git
-[submodule "reason-mode"]
-	path = lib/reason-mode
-	url = git@github.com:reasonml-editor/reason-mode.git
+[submodule "pyvenv"]
+	path = lib/pyvenv
+	url = git@github.com:jorgenschaefer/pyvenv.git
 [submodule "restart-emacs"]
 	path = lib/restart-emacs
 	url = git@github.com:iqbalansari/restart-emacs.git
 [submodule "s"]
 	path = lib/s
 	url = git@github.com:magnars/s.el.git
+[submodule "shrink-path"]
+	path = lib/shrink-path
+	url = git@gitlab.com:bennya/shrink-path.el.git
 [submodule "shut-up"]
 	path = lib/shut-up
 	url = git@github.com:cask/shut-up.git
 [submodule "smex"]
 	path = lib/smex
 	url = git@github.com:nonsequitur/smex.git
-[submodule "solaire-mode"]
-	path = lib/solaire-mode
-	url = git@github.com:hlissner/emacs-solaire-mode.git
 [submodule "spaceline"]
 	path = lib/spaceline
 	url = git@github.com:TheBB/spaceline.git
+[submodule "transient"]
+	path = lib/transient
+	url = git@github.com:magit/transient.git
 [submodule "undo-tree"]
 	path = lib/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
