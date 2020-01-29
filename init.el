@@ -21,13 +21,14 @@
   (setq-default fill-column 80)
   (setq-default indent-tabs-mode nil)
   (setq-default indicate-empty-lines t)
-  (setq-default indicate-buffer-boundaries 'left)
   (scroll-bar-mode 0)
   (tool-bar-mode 0)
   (menu-bar-mode 0)
   (blink-cursor-mode 0)
   (fset 'yes-or-no-p #'y-or-n-p)
   (setq ring-bell-function 'ignore))
+
+(setq create-lockfiles nil)
 
 (defmacro fn! (&rest body) `(lambda () (interactive) ,body))
 
@@ -37,34 +38,37 @@
   (borg-initialize))
 
 (progn ;    `use-package'
-  (require  'use-package)
-  (setq use-package-verbose t))
+  (setq use-package-always-defer t)
+  (setq use-package-enable-imenu-support t)
+  (setq use-package-minimum-reported-time 0)
+  (setq use-package-verbose t)
+  (setq use-package-compute-statistics t)
+  (require  'use-package))
+
+(use-package diminish)
 
 (use-package auto-compile
+  :demand t
+  :init
+  (setq auto-compile-display-buffer nil)
+  (setq auto-compile-mode-line-counter t)
+  (setq auto-compile-source-recreate-deletes-dest t)
+  (setq auto-compile-toggle-deletes-nonlib-dest t)
+  (setq auto-compile-update-autoloads t)
   :hook
   (auto-compile-inhibit-compile . auto-compile-inhibit-compile-detached-git-head)
-  :init
-  (auto-compile-on-load-mode)
-  (auto-compile-on-save-mode)
   :config
-  (setq auto-compile-display-buffer               nil)
-  (setq auto-compile-mode-line-counter            t)
-  (setq auto-compile-source-recreate-deletes-dest t)
-  (setq auto-compile-toggle-deletes-nonlib-dest   t)
-  (setq auto-compile-update-autoloads             t))
+  (auto-compile-on-load-mode)
+  (auto-compile-on-save-mode))
 
-(use-package no-littering)
+(use-package no-littering
+  :demand t)
 
 (use-package custom
   :config
   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
   (when (file-exists-p custom-file)
     (load custom-file)))
-
-(use-package server
-  :config
-  (unless (server-running-p)
-    (server-mode)))
 
 (use-package general
   :demand t
@@ -102,16 +106,9 @@
 
 ;;; Long tail
 
-(use-package add-node-modules-path)
-
 (use-package alert
   :config
   (setq alert-default-style 'libnotify))
-
-(use-package anaconda-mode
-  :hook ((python-mode . anaconda-mode)
-         (python-mode . anaconda-eldoc-mode))
-  :diminish anaconda-mode)
 
 (use-package autorevert
   :init
@@ -122,13 +119,11 @@
 
 (use-package cl-lib-highlight
   :config
-  (progn
-    (add-hook 'emacs-lisp-mode-hook #'cl-lib-highlight-initialize)
-    (add-hook 'emacs-lisp-mode-hook #'cl-lib-highlight-warn-cl-initialize)))
-
+  :hook ((emacs-lisp-mode . cl-lib-highlight-initialize)
+         (emacs-lisp-mode . cl-lib-highlight-warn-cl-initialize)))
 
 (use-package company
-  :diminish company-mode
+  :diminish (company-mode . " a")
   :init
   (global-company-mode)
   :config
@@ -139,15 +134,6 @@
         company-dabbrev-downcase nil
         company-dabbrev-ignore-case t))
 
-(use-package company-anaconda
-  :defer t
-  :init
-  (defun my-setup-py-company ()
-    (make-local-variable 'company-backends)
-    (setq-local company-idle-delay 0.1)
-    (add-to-list 'company-backends 'company-anaconda))
-  (add-hook 'anaconda-mode-hook #'my-setup-py-company))
-
 (use-package company-quickhelp
   :after company
   :disabled t
@@ -156,6 +142,7 @@
   (define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin))
 
 (use-package company-shell
+  :after company
   :init
   (add-to-list 'company-backends 'company-shell))
 
@@ -170,6 +157,7 @@
   (setq compilation-scroll-output t))
 
 (use-package counsel
+  :diminish counsel-mode
   :general
   (my-leader
    "SPC" 'counsel-M-x
@@ -215,6 +203,11 @@
   (setq dired-dwim-target t)
   (setq dired-listing-switches "-alhFv --group-directories-first"))
 
+(use-package default-text-scale
+  :demand t
+  :config
+  (default-text-scale-mode))
+
 (use-package dired-x
   :hook (dired-mode . dired-omit-mode)
   :config
@@ -226,8 +219,7 @@
 
 (use-package dockerfile-mode)
 
-(use-package doom-one-theme
-  :disabled t
+(use-package doom-themes
   :custom (doom-one-brighter-comments t)
   :init
   (load-theme 'doom-one 'no-confirm))
@@ -240,12 +232,22 @@
         ediff-window-setup-function 'ediff-setup-windows-plain))
 
 (use-package eldoc
+  :diminish eldoc-mode
   :config (global-eldoc-mode))
 
 (use-package elide-head
   :init (add-hook 'prog-mode-hook #'elide-head))
 
+
+(use-package prog-mode
+  :config
+  (defun indicate-buffer-boundaries-left ()
+    (setq indicate-buffer-boundaries 'left))
+  (add-hook 'prog-mode-hook #'indicate-buffer-boundaries-left))
+
+
 (use-package elisp-slime-nav
+  :diminish elisp-slime-nav-mode
   :general
   (my-mode-leader
    :keymaps 'emacs-lisp-mode-map
@@ -267,31 +269,50 @@
   (evil-want-C-i-jump nil)
   (evil-want-C-u-scroll t)
   (evil-want-C-w-in-emacs-state t)
-  (evil-want-integration nil)
+  (evil-want-keybinding nil)
   :init (evil-mode)
   :config
+
+  (evil-ex-define-cmd "W" 'evil-write)
   (define-key evil-normal-state-map (kbd "M-.") nil))
 
+(use-package org-tree-slide
+  ;; :custom (org-tree-slide-never-touch-face t)
+  :hook (org-tree-slide-mode . my-org-slide-hook)
+  :init
+  (defun my-org-slide-hook ()
+    (org-display-inline-images)
+    (setq org-hide-emphasis-markers org-tree-slide-mode)
+    (font-lock-fontify-buffer)))
+
 (use-package evil-anzu
-  :config
-  (setq anzu-cons-mode-line-p nil))
+  :demand t)
 
 (use-package evil-collection
   :custom (evil-collection-setup-minibuffer t)
   :init (evil-collection-init))
 
 (use-package evil-ediff
+  :disabled t
   :config
   (evil-ediff-init))
 
 (use-package evil-magit
+  :demand t
   :after magit)
 
 (use-package evil-multiedit
   :demand t
   :config
   (setq evil-multiedit-follow-matches t)
-  (evil-multiedit-default-keybinds))
+  (evil-multiedit-default-keybinds)
+
+  (defun my-eme-match-fn ()
+    (interactive)
+    (evil-multiedit-match-all)
+    (iedit-restrict-function))
+
+  (define-key evil-normal-state-map (kbd "M-r") #'my-eme-match-fn))
 
 (use-package evil-surround
   :init
@@ -304,12 +325,111 @@
   (global-evil-visualstar-mode))
 
 (use-package exec-path-from-shell
+  :disabled t
+  :demand t
   :config
   (exec-path-from-shell-initialize))
 
 (use-package executable
   :init
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p))
+
+(use-package cmake-mode)
+
+(use-package lsp-mode
+  :disabled t
+  :general
+  (my-leader
+    :keymaps 'lsp-mode-map
+    "=" '(lsp-format-buffer :wk "fmt"))
+  :hook
+  (python-mode . lsp)
+  (c++-mode . lsp)
+  ;; (vue-mode . lsp)
+
+  :config
+  (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\.venv$")
+  (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\.ipynb_checkpoints$")
+  (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\.mypy_cache$")
+  (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\.pytest_cache$")
+  (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\.ccls-cache$")
+
+
+  (setq lsp-enable-snippet nil)
+
+  )
+
+(use-package js
+  :general
+  (:keymap 'js-mode-map
+            [remap js-find-symbol] 'xref-find-definitions))
+
+(use-package lsp-ui
+  :disabled t
+  :general
+  (:keymaps 'lsp-ui-mode-map
+            [remap xref-find-definitions] 'lsp-ui-peek-find-definitions
+            [remap xref-find-references] 'lsp-ui-peek-find-references
+            [remap evil-lookup] 'lsp-ui-doc-show)
+  :custom
+  (lsp-ui-sideline-enable nil)
+  (lsp-ui-doc-enable nil))
+
+
+(defun my/eglot-fmt-before-save ()
+  (add-hook 'before-save-hook 'eglot-format-buffer nil t))
+(defun my/eglot-ensure ()
+  (when buffer-file-name
+    (eglot-ensure)))
+
+(use-package flymake
+  :load-path "~/.emacs.d/lisp")
+
+(use-package jsonrpc
+  :load-path "~/.emacs.d/lisp")
+
+(use-package eglot
+  ;; :disabled t
+  :general
+  (my-leader
+   :keymaps 'eglot-mode-map
+   "=" '(eglot-format-buffer :wk "fmt"))
+  :hook
+  (python-mode . my/eglot-ensure)
+  (python-mode . my/eglot-fmt-before-save)
+  (c++-mode . my/eglot-ensure)
+  (c++-mode . my/eglot-fmt-before-save)
+  :custom
+  (eglot-autoshutdown t)
+
+
+  :config
+  (add-to-list 'eglot-server-programs '(elm-mode . ("elm-language-server" "--stdio")))
+  (setq eglot-workspace-configuration
+        '((pyls . ((configurationSources . ["flake8"])))))
+
+
+  ;; (push '((c++-mode c-mode) . ("clangd-8")) eglot-server-programs)
+
+  ;; (setq eglot-workspace-configuration
+  ;;       '((pyls . ((plugins . ((jedi_definition . ((follow_imports . t)
+  ;;                                                  (follow_builtin_imports . t)))
+  ;;                              (jedi_completion . ((include_params . nil)))))
+  ;;                  (configurationSources . ["flake8"])))))
+
+
+
+
+  ;; (add-hook 'python-mode-hook
+  ;;           (lambda ()
+  ;;             (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
+  ;; (add-hook 'c++-mode-hook
+  ;;           (lambda ()
+  ;;             (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
+  ;; (advice-add 'eglot--format-markup :filter-return
+  ;;             (lambda (r)
+  ;;             (replace-regexp-in-string "\\\\\\*" "*" r))))
+  )
 
 (use-package eyebrowse
   :config
@@ -319,40 +439,14 @@
 
 (use-package flx)
 
-(use-package flycheck
-  :general
-  (my-leader
-   :keymaps 'flycheck-mode-map
-   "e"  '(:ignore t :wk "errors")
-   "ev" 'flycheck-verify-setup
-   "el" 'flycheck-list-errors
-   "ey" 'flycheck-copy-errors-as-kill)
-  :diminish flycheck-mode
-  :init
-  (defun pkg-info-version-info (_arg) "hack")
-  (global-flycheck-mode))
-
-(use-package flycheck-cask
-  :defer t
-  :init (add-hook 'flycheck-mode-hook #'flycheck-cask-setup))
-
-(use-package flycheck-package
-  :init
-  (with-eval-after-load 'flycheck
-    (flycheck-package-setup)))
-
-(use-package flycheck-pos-tip
-  :after flycheck
-  :init
-  (flycheck-pos-tip-mode))
-
 (use-package flyspell
-  :diminish flyspell-mode
+  :diminish (flyspell-mode . " s")
   :config
   (setq flyspell-issue-message-flag nil
         flyspell-issue-welcome-flag nil)
   (add-hook 'text-mode-hook 'flyspell-mode)
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode))
+  ;; (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  )
 
 (use-package flyspell-correct-ivy
   :general
@@ -376,9 +470,7 @@
   (hes-mode))
 
 (use-package highlight-numbers
-  :defer t
-  :init
-  (add-hook 'prog-mode-hook #'highlight-numbers-mode))
+  :hook (prog-mode . highlight-numbers-mode))
 
 (use-package hippie-exp
   :general ([remap dabbrev-expand] 'hippie-expand)
@@ -398,10 +490,14 @@
     (add-to-list 'hippie-expand-try-functions-list
                  'yas-hippie-try-expand)))
 
+;; (use-package yasnippet
+;;   :init (yas-global-mode))
+
 (use-package hl-line
   :init (global-hl-line-mode))
 
 (use-package hl-todo
+  :disabled t
   :init
   (global-hl-todo-mode)
   :config
@@ -416,13 +512,22 @@
   (setq isearch-allow-scroll t))
 
 (use-package ivy
+  :diminish ivy-mode
   :init (ivy-mode)
   :config
   (define-key ivy-minibuffer-map (kbd "C-w") #'ivy-backward-kill-word)
   (setq ivy-use-virtual-buffers t
         ivy-re-builders-alist '((t . ivy--regex-fuzzy))))
 
+(use-package ivy-xref
+  :init (if (< emacs-major-version 27)
+            (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)
+          (setq xref-show-definitions-function #'ivy-xref-show-defs)))
+
 (use-package ivy-hydra)
+
+(use-package ivy-rich
+  :config (ivy-rich-mode))
 
 (use-package js2-mode
   :defer t
@@ -439,6 +544,9 @@
   :disabled t
   :init (lisp-extra-font-lock-global-mode))
 
+(use-package reveal
+  :diminish reveal-mode)
+
 (use-package lisp-mode
   :preface
   (defun indent-spaces-mode ()
@@ -446,6 +554,9 @@
   :hook ((emacs-lisp-mode . outline-minor-mode)
          (emacs-lisp-mode . reveal-mode)
          (lisp-interaction-mode . indent-spaces-mode)))
+
+(use-package outline
+  :diminish outline-minor-mode)
 
 (use-package macrostep
   :general
@@ -458,6 +569,10 @@
 
 (use-package magit
   :defer t
+  :custom
+  (magit-repository-directories '(("~/code" . 1)))
+  (magit-save-repository-buffers 'dontask)
+  (magit-status-goto-file-position t)
   :config
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
         magit-diff-refine-hunk 'all)
@@ -465,6 +580,14 @@
                           'magit-insert-modules
                           'magit-insert-stashes
                           'append))
+
+(use-package magit-todos
+  :disabled t  ;; TODO
+  :custom
+  (magit-todos-exclude-globs '("*\.js\.map"))
+  :init (magit-todos-mode)
+  )
+
 (use-package man
   :defer t
   :config (setq Man-width 80))
@@ -475,12 +598,11 @@
   :init
   (load-theme 'material t))
 
-(use-package merlin
-  :config
-  (setq merlin-locate-in-new-window 'never)
-  (setq merlin-completion-with-doc t)
-  (define-key merlin-mode-map (kbd "M-.") 'merlin-locate)
-  (define-key merlin-mode-map (kbd "M-,") 'merlin-pop-stack))
+(use-package zenburn-theme
+  :disabled t
+  :init
+  (load-theme 'zenburn t))
+
 
 (use-package page-break-lines
   :diminish page-break-lines-mode
@@ -497,11 +619,14 @@
   :hook ((css-mode js2-mode json-mode less-css-mode) . prettier-js-mode))
 
 (use-package projectile
+  :diminish projectile-mode
   :general
   (my-leader
    :keymaps 'projectile-mode-map
    "p" '(projectile-command-map :wk "project"))
-  :init (projectile-mode)
+  ;; :custom (projectile-keymap-prefix (kbd "SPC p"))
+  :init
+  (projectile-mode)
   :config
   (setq projectile-completion-system 'ivy)
   :diminish projectile-mode)
@@ -514,50 +639,32 @@
   :diminish (projectile-git-autofetch-mode . "↓"))
 
 (use-package py-isort
+  :disabled t
   :config
   (add-hook 'before-save-hook 'py-isort-before-save))
 
-(use-package pyenv-mode
-  :general
-  (my-mode-leader
-   :keymaps 'python-mode-map
-   "vv" 'my-pyenv-mode-set-local-version
-   "vs" 'pyenv-mode-set
-   "vu" 'pyenv-mode-unset)
-  :config
-  (defun my-pyenv-mode-set-local-version ()
-    (interactive)
-    (let ((root-path (locate-dominating-file default-directory ".python-version")))
-      (when root-path
-        (let* ((file-path (expand-file-name ".python-version" root-path))
-               (version
-                (with-temp-buffer
-                  (insert-file-contents-literally file-path)
-                  (buffer-substring-no-properties (line-beginning-position)
-                                                  (line-end-position)))))
-          (if (member version (pyenv-mode-versions))
-              (pyenv-mode-set version)
-            (message "pyenv: version `%s' is not installed (set by %s)"
-                     version file-path))))))
-  (add-hook 'python-mode-hook 'pyenv-mode))
 
-(use-package reason-mode
+(use-package org
   :config
-  (require 'merlin)
-  (add-hook 'reason-mode-hook 'add-node-modules-path)
-  (add-hook 'reason-mode-hook 'merlin-mode 'append))
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((shell . t))))
+
+(use-package pyvenv
+  :hook (python-mode . my-pyvenv-activate-local)
+  :init
+  (defun my-pyvenv-activate-local ()
+    (interactive)
+    (when-let ((root (locate-dominating-file
+                      default-directory
+                      (lambda (d) (file-directory-p (expand-file-name ".venv" d))))))
+      (pyvenv-activate (expand-file-name ".venv" root)))))
+
+
 
 (use-package recentf
   :demand t
   :init (recentf-mode)
   :config (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?:"))
-
-(use-package refmt
-  :config
-  (setq refmt-show-errors nil)
-  (defun refmt-before-save ()
-    (add-hook 'before-save-hook 'refmt nil t))
-  (add-hook 'reason-mode-hook 'refmt-before-save))
 
 (use-package restart-emacs
   :general
@@ -581,21 +688,34 @@
 
 (use-package smex)
 
-(use-package solaire-mode
-  :init
-  (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
-  ;; (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
-  (add-hook 'after-revert-hook #'turn-on-solaire-mode)
-  ;; (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
-  (solaire-mode-swap-bg))
+(defun my/ibuffer-setup ()
+  (ibuffer-projectile-set-filter-groups)
+  (unless (eq ibuffer-sorting-mode 'alphabetic)
+    (ibuffer-do-sort-by-alphabetic)))
 
-(use-package spaceline-config
-  :config
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  (setq powerline-default-separator 'alternate)
-  (setq spaceline-window-numbers-unicode t
-        spaceline-workspace-numbers-unicode t)
-  (spaceline-spacemacs-theme))
+(use-package ibuffer-projectile
+  :hook (ibuffer . my/ibuffer-setup))
+
+
+(use-package smart-mode-line
+  :disabled t
+  :init
+  (setq sml/theme 'respectful)
+  (sml/setup))
+
+(use-package all-the-icons
+  :custom
+  (all-the-icons-scale-factor 1.0)
+  )
+
+(use-package doom-modeline
+  ;; :disabled t ;; TODO
+  :custom
+  (doom-modeline-icon nil)
+  (doom-modeline-height 25)
+  (doom-modeline-unicode-fallback nil)
+  :defer t
+  :hook (after-init . doom-modeline-init))
 
 (use-package tramp
   :defer t
@@ -623,13 +743,14 @@
   (which-key-mode))
 
 (use-package whitespace
+  :diminish (whitespace-mode . " w")
   :hook (prog-mode . whitespace-mode)
   :config
   (setq whitespace-style '(face tab-mark tabs trailing)))
 
 (use-package whitespace-cleanup-mode
   :init (global-whitespace-cleanup-mode)
-  :diminish whitespace-cleanup-mode)
+  :diminish (whitespace-cleanup-mode . " W"))
 
 (use-package winner
   :general
@@ -640,6 +761,93 @@
 
 (use-package yaml-mode
   :defer t)
+
+
+
+(use-package project
+  :init
+  (defun my-project-try-files (dir)
+    (when-let (parent (or (locate-dominating-file dir "pyproject.toml")
+                          (locate-dominating-file dir "compile_commands.json")))
+      `(transient . ,parent)))
+
+  (add-hook 'project-find-functions 'my-project-try-files))
+
+
+(use-package vterm
+  :disabled t
+  :init
+  (defvar vterm-install t))
+;; (use-package vterm
+;;   :load-path "~/code/emacs-libvterm"
+;;   :commands (vterm)
+;;   :hook
+;;   (vterm-mode . my-vterm-hook)
+;;   (vterm-exit . kill-buffer)
+;;   :init
+
+;;   (defun my-vterm-hook ()
+;;     (setq-local global-hl-line-mode nil)
+;;     (setq-local truncate-lines t))
+
+;;   (evil-set-initial-state 'vterm-mode 'emacs))
+
+
+(use-package eldoc-box
+  :disabled t
+  ;; :hook (eglot--managed-mode . eldoc-box-hover-mode)
+  )
+
+
+(use-package pack
+  :load-path "~/code/pack-el"
+  :general
+  (nmap dired-mode-map
+        "P" 'pack-dired-dwim))
+
+
+(use-package flymake
+  :general
+  (nmap flymake-mode-map
+    "M-n" 'flymake-goto-next-error
+    "M-p" 'flymake-goto-prev-error))
+
+(use-package cc-mode
+  ;; :hook
+  ;; (c++-mode . lsp)
+  ;; (c++-mode . my-lsp-format-buffer-hook)
+  :init
+  ;; (defun my-lsp-format-buffer-hook ()
+  ;;   (add-hook 'before-save-hook 'lsp-format-buffer nil t))
+  ;; )
+  )
+
+
+(use-package flymake-diagnostic-at-point
+  :hook (flymake-mode . flymake-diagnostic-at-point-mode)
+  :custom
+  ;; (flymake-diagnostic-at-point-display-diagnostic-function 'flymake-diagnostic-at-point-display-minibuffer)
+  (flymake-diagnostic-at-point-error-prefix nil)
+  :after flymake)
+
+(defun my-fix-thingatpt-url (orig-fun &rest args)
+  "Remove trailing ' from urls."
+  (pcase (apply orig-fun args)
+    (`(,beg . ,(and end (guard (= (char-before end) ?'))))
+     (cons beg (1- end)))
+    (x x)))
+
+(advice-add 'thing-at-point-bounds-of-url-at-point :around #'my-fix-thingatpt-url)
+
+(use-package python
+  :init
+  (defun fb/insert-set-trace ()
+    (interactive)
+    (insert "import pdb; pdb.set_trace()")
+    (newline nil t))
+  :general
+  (imap python-mode-map
+        "C-p" 'fb/insert-set-trace))
 
 (progn ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file
