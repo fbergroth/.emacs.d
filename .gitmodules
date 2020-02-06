@@ -13,6 +13,9 @@
 [submodule "anzu"]
 	path = lib/anzu
 	url = git@github.com:syohex/emacs-anzu.git
+[submodule "async"]
+	path = lib/async
+	url = git@github.com:jwiegley/emacs-async.git
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = git@github.com:emacscollective/auto-compile.git
@@ -153,6 +156,15 @@
 [submodule "git-modes"]
 	path = lib/git-modes
 	url = git@github.com:magit/git-modes.git
+[submodule "helm"]
+	path = lib/helm
+	url = git@github.com:emacs-helm/helm.git
+[submodule "helm-projectile"]
+	path = lib/helm-projectile
+	url = git@github.com:bbatsov/helm-projectile.git
+[submodule "helm-rg"]
+	path = lib/helm-rg
+	url = git@github.com:cosmicexplorer/helm-rg.git
 [submodule "helpful"]
 	path = lib/helpful
 	url = git@github.com:Wilfred/helpful.git
@@ -168,6 +180,9 @@
 [submodule "hydra"]
 	path = lib/hydra
 	url = git@github.com:abo-abo/hydra.git
+[submodule "ibuffer-projectile"]
+	path = lib/ibuffer-projectile
+	url = git@github.com:purcell/ibuffer-projectile.git
 [submodule "iedit"]
 	path = lib/iedit
 	url = git@github.com:victorhge/iedit.git
@@ -211,6 +226,9 @@
 [submodule "magit-popup"]
 	path = lib/magit-popup
 	url = git@github.com:magit/magit-popup.git
+[submodule "magit-todos"]
+	path = lib/magit-todos
+	url = git@github.com:alphapapa/magit-todos.git
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
@@ -235,6 +253,9 @@
 [submodule "parent-mode"]
 	path = lib/parent-mode
 	url = git@github.com:Fanael/parent-mode.git
+[submodule "pcre2el"]
+	path = lib/pcre2el
+	url = git@github.com:joddie/pcre2el.git
 [submodule "pip-requirements"]
 	path = lib/pip-requirements
 	url = git@github.com:Wilfred/pip-requirements.el.git
@@ -298,6 +319,9 @@
 [submodule "web-mode"]
 	path = lib/web-mode
 	url = git@github.com:fxbois/web-mode.git
+[submodule "wgrep"]
+	path = lib/wgrep
+	url = git@github.com:mhayashi1120/Emacs-wgrep.git
 [submodule "which-key"]
 	path = lib/which-key
 	url = git@github.com:justbur/emacs-which-key.git
