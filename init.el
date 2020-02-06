@@ -74,7 +74,6 @@
   :demand t
   :config
   (general-evil-setup 'short)
-  (general-override-mode)
 
   (general-create-definer
    my-leader
@@ -194,11 +193,7 @@
   :init (global-diff-hl-mode))
 
 (use-package dired
-  :defer t
-  :general
-  (nmap dired-mode-map
-        "-" 'dired-up-directory)
-  :config
+  :init
   (setq dired-auto-revert-buffer t)
   (setq dired-dwim-target t)
   (setq dired-listing-switches "-alhFv --group-directories-first"))
