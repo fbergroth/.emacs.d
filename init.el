@@ -171,7 +171,7 @@
    "sg"  'counsel-git-grep)
   :init (counsel-mode)
   :config
-  (setq counsel-git-cmd "git ls-files --recurse-submodules --")
+  (setq counsel-git-cmd "git ls-files -z --full-name --recurse-submodules --")
   (setq counsel-rg-base-command "rg -i --no-heading --line-number --color never --max-columns 120 %s ."))
 
 (use-package counsel-projectile
@@ -209,15 +209,15 @@
   (setq dired-omit-verbose nil))
 
 (use-package diredfl
-  :init
-  (diredfl-global-mode))
+  :hook (dired-mode . diredfl-mode))
 
 (use-package dockerfile-mode)
 
 (use-package doom-themes
+  :disabled t
   :custom (doom-one-brighter-comments t)
   :init
-  (load-theme 'doom-one 'no-confirm))
+  (load-theme 'doom-material 'no-confirm))
 
 (use-package ediff
   :hook (ediff-quit . winner-undo)
@@ -271,19 +271,14 @@
   (evil-ex-define-cmd "W" 'evil-write)
   (define-key evil-normal-state-map (kbd "M-.") nil))
 
-(use-package org-tree-slide
-  ;; :custom (org-tree-slide-never-touch-face t)
-  :hook (org-tree-slide-mode . my-org-slide-hook)
-  :init
-  (defun my-org-slide-hook ()
-    (org-display-inline-images)
-    (setq org-hide-emphasis-markers org-tree-slide-mode)
-    (font-lock-fontify-buffer)))
-
 (use-package evil-anzu
   :demand t)
 
 (use-package evil-collection
+  :general
+  (nmap evil-collection-unimpaired-mode-map
+    "M-n" 'evil-collection-unimpaired-next-error
+    "M-p" 'evil-collection-unimpaired-previous-error)
   :custom (evil-collection-setup-minibuffer t)
   :init (evil-collection-init))
 
@@ -399,7 +394,6 @@
 
 
   :config
-  (add-to-list 'eglot-server-programs '(elm-mode . ("elm-language-server" "--stdio")))
   (setq eglot-workspace-configuration
         '((pyls . ((configurationSources . ["flake8"])))))
 
@@ -485,9 +479,6 @@
     (add-to-list 'hippie-expand-try-functions-list
                  'yas-hippie-try-expand)))
 
-;; (use-package yasnippet
-;;   :init (yas-global-mode))
-
 (use-package hl-line
   :init (global-hl-line-mode))
 
@@ -525,7 +516,6 @@
   :config (ivy-rich-mode))
 
 (use-package js2-mode
-  :defer t
   :mode (("\\.js\\'" . js2-mode))
   :config
   (js2-mode-hide-warnings-and-errors)
@@ -563,29 +553,27 @@
   (evil-make-overriding-map macrostep-keymap 'motion))
 
 (use-package magit
-  :defer t
   :custom
   (magit-repository-directories '(("~/code" . 1)))
   (magit-save-repository-buffers 'dontask)
   (magit-status-goto-file-position t)
   :config
-  (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
-        magit-diff-refine-hunk 'all)
+  (setq magit-module-sections-nested nil)
+  (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+  (setq magit-diff-refine-hunk 'all)
   (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-modules
                           'magit-insert-stashes
                           'append))
 
 (use-package magit-todos
-  :disabled t  ;; TODO
+  :after magit
   :custom
   (magit-todos-exclude-globs '("*\.js\.map"))
-  :init (magit-todos-mode)
-  )
+  :init (magit-todos-mode))
 
 (use-package man
-  :defer t
-  :config (setq Man-width 80))
+  :init (setq Man-width 80))
 
 (use-package markdown-mode)
 
@@ -654,8 +642,6 @@
                       (lambda (d) (file-directory-p (expand-file-name ".venv" d))))))
       (pyvenv-activate (expand-file-name ".venv" root)))))
 
-
-
 (use-package recentf
   :demand t
   :init (recentf-mode)
@@ -691,7 +677,6 @@
 (use-package ibuffer-projectile
   :hook (ibuffer . my/ibuffer-setup))
 
-
 (use-package smart-mode-line
   :disabled t
   :init
@@ -709,11 +694,9 @@
   (doom-modeline-icon nil)
   (doom-modeline-height 25)
   (doom-modeline-unicode-fallback nil)
-  :defer t
   :hook (after-init . doom-modeline-init))
 
 (use-package tramp
-  :defer t
   :config
   (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
   (add-to-list 'tramp-default-proxies-alist '("localhost" nil nil))
@@ -754,10 +737,7 @@
    "C-w ]" 'winner-redo)
   :init (winner-mode))
 
-(use-package yaml-mode
-  :defer t)
-
-
+(use-package yaml-mode)
 
 (use-package project
   :init
@@ -800,12 +780,6 @@
   (nmap dired-mode-map
         "P" 'pack-dired-dwim))
 
-
-(use-package flymake
-  :general
-  (nmap flymake-mode-map
-    "M-n" 'flymake-goto-next-error
-    "M-p" 'flymake-goto-prev-error))
 
 (use-package cc-mode
   ;; :hook
