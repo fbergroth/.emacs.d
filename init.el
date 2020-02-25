@@ -750,22 +750,13 @@
 
 
 (use-package vterm
-  :disabled t
+  :hook
+  (vterm-mode . my-vterm-hook)
   :init
-  (defvar vterm-install t))
-;; (use-package vterm
-;;   :load-path "~/code/emacs-libvterm"
-;;   :commands (vterm)
-;;   :hook
-;;   (vterm-mode . my-vterm-hook)
-;;   (vterm-exit . kill-buffer)
-;;   :init
+  (defun my-vterm-hook ()
+    (setq-local global-hl-line-mode nil)
+    (setq-local truncate-lines t)))
 
-;;   (defun my-vterm-hook ()
-;;     (setq-local global-hl-line-mode nil)
-;;     (setq-local truncate-lines t))
-
-;;   (evil-set-initial-state 'vterm-mode 'emacs))
 
 
 (use-package eldoc-box
