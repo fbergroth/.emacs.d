@@ -782,6 +782,10 @@
   ;; )
   )
 
+(use-package rust
+  :init
+  (setq rust-format-on-save t))
+
 
 (use-package flymake-diagnostic-at-point
   :hook (flymake-mode . flymake-diagnostic-at-point-mode)
