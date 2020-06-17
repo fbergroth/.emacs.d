@@ -275,10 +275,13 @@
   :demand t)
 
 (use-package evil-collection
+  :after evil
   :general
   (nmap evil-collection-unimpaired-mode-map
     "M-n" 'evil-collection-unimpaired-next-error
-    "M-p" 'evil-collection-unimpaired-previous-error)
+    "M-p" 'evil-collection-unimpaired-previous-error
+    "M-N" 'next-error
+    "M-P" 'previous-error)
   :custom (evil-collection-setup-minibuffer t)
   :init (evil-collection-init))
 
