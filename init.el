@@ -215,10 +215,9 @@
 (use-package dockerfile-mode)
 
 (use-package doom-themes
-  :disabled t
   :custom (doom-one-brighter-comments t)
   :init
-  (load-theme 'doom-material 'no-confirm))
+  (load-theme 'doom-one 'no-confirm))
 
 (use-package ediff
   :hook (ediff-quit . winner-undo)
@@ -579,6 +578,7 @@
 (use-package markdown-mode)
 
 (use-package material-theme
+  :disabled t
   :init
   (load-theme 'material t))
 
