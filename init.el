@@ -188,7 +188,8 @@
   :config (dash-enable-font-lock))
 
 (use-package diff-hl
-  :hook ((magit-post-refresh . diff-hl-magit-post-refresh)
+  :hook ((magit-pre-refresh-hook . diff-hl-magit-pre-refresh)
+         (magit-post-refresh . diff-hl-magit-post-refresh)
          (dired-mode . diff-hl-dired-mode))
   :init (global-diff-hl-mode))
 
