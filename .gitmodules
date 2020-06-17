@@ -80,6 +80,11 @@
 [submodule "elisp-slime-nav"]
 	path = lib/elisp-slime-nav
 	url = git@github.com:purcell/elisp-slime-nav.git
+[submodule "emacs-tree-sitter"]
+	path = lib/emacs-tree-sitter
+	url = git@github.com:ubolonton/emacs-tree-sitter.git
+	load-path = lisp
+	load-path = langs
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = git@github.com:skeeto/emacsql.git

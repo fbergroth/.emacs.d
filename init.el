@@ -705,6 +705,12 @@
   (add-to-list 'tramp-default-proxies-alist
                (list (regexp-quote (system-name)) nil nil)))
 
+(use-package tree-sitter
+  :hook (tree-sitter-after-on . tree-sitter-hl-mode)
+  :init
+  (require 'tree-sitter-langs)
+  (global-tree-sitter-mode))
+
 (use-package undo-tree
   :diminish undo-tree-mode)
 
