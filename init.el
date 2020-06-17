@@ -326,8 +326,6 @@
   :init
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p))
 
-(use-package cmake-mode)
-
 (use-package lsp-mode
   :disabled t
   :general
@@ -696,7 +694,7 @@
   (doom-modeline-icon nil)
   (doom-modeline-height 25)
   (doom-modeline-unicode-fallback nil)
-  :hook (after-init . doom-modeline-init))
+  :init (doom-modeline-mode))
 
 (use-package tramp
   :config
