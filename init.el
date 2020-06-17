@@ -318,7 +318,6 @@
   (global-evil-visualstar-mode))
 
 (use-package exec-path-from-shell
-  :disabled t
   :demand t
   :config
   (exec-path-from-shell-initialize))
@@ -486,7 +485,6 @@
   :init (global-hl-line-mode))
 
 (use-package hl-todo
-  :disabled t
   :init
   (global-hl-todo-mode)
   :config
@@ -602,6 +600,7 @@
 (use-package pip-requirements)
 
 (use-package prettier-js
+  :commands prettier-js
   :hook ((css-mode js2-mode json-mode less-css-mode) . prettier-js-mode))
 
 (use-package projectile
@@ -761,6 +760,9 @@
     (setq-local truncate-lines t)))
 
 
+(use-package vterm-toggle
+  :general
+  ("C-`" 'vterm-toggle))
 
 (use-package eldoc-box
   :disabled t
