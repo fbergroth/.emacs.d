@@ -271,6 +271,9 @@
   (evil-ex-define-cmd "W" 'evil-write)
   (define-key evil-normal-state-map (kbd "M-.") nil))
 
+(use-package anzu
+  :init (global-anzu-mode))
+
 (use-package evil-anzu
   :demand t)
 
