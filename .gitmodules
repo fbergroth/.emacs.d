@@ -19,9 +19,6 @@
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = git@github.com:emacscollective/auto-compile.git
-[submodule "blacken"]
-	path = lib/blacken
-	url = git@github.com:proofit404/blacken.git
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
@@ -161,9 +158,6 @@
 [submodule "git-modes"]
 	path = lib/git-modes
 	url = git@github.com:magit/git-modes.git
-[submodule "helpful"]
-	path = lib/helpful
-	url = git@github.com:Wilfred/helpful.git
 [submodule "highlight-escape-sequences"]
 	path = lib/highlight-escape-sequences
 	url = git@github.com:dgutov/highlight-escape-sequences.git
@@ -258,9 +252,6 @@
 [submodule "pip-requirements"]
 	path = lib/pip-requirements
 	url = git@github.com:Wilfred/pip-requirements.el.git
-[submodule "pipenv"]
-	path = lib/pipenv
-	url = git@github.com:pwalsh/pipenv.el.git
 [submodule "popup"]
 	path = lib/popup
 	url = git@github.com:auto-complete/popup-el.git
@@ -279,12 +270,6 @@
 [submodule "projectile-git-autofetch"]
 	path = lib/projectile-git-autofetch
 	url = git@github.com:andrmuel/projectile-git-autofetch.git
-[submodule "py-isort"]
-	path = lib/py-isort
-	url = git@github.com:paetzke/py-isort.el.git
-[submodule "pyenv-mode"]
-	path = lib/pyenv-mode
-	url = git@github.com:proofit404/pyenv-mode.git
 [submodule "pyvenv"]
 	path = lib/pyvenv
 	url = git@github.com:jorgenschaefer/pyvenv.git
@@ -306,9 +291,6 @@
 [submodule "smex"]
 	path = lib/smex
 	url = git@github.com:nonsequitur/smex.git
-[submodule "spaceline"]
-	path = lib/spaceline
-	url = git@github.com:TheBB/spaceline.git
 [submodule "transient"]
 	path = lib/transient
 	url = git@github.com:magit/transient.git
