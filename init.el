@@ -275,8 +275,8 @@
   (nmap evil-collection-unimpaired-mode-map
     "M-n" 'evil-collection-unimpaired-next-error
     "M-p" 'evil-collection-unimpaired-previous-error
-    "M-N" 'next-error
-    "M-P" 'previous-error)
+    "C-M-n" 'next-error
+    "C-M-p" 'previous-error)
   :custom (evil-collection-setup-minibuffer t)
   :init (evil-collection-init))
 
