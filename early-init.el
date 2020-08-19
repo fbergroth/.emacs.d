@@ -3,6 +3,11 @@
 (setq gc-cons-threshold most-positive-fixnum)
 (setq load-prefer-newer t)
 
+;; Disable some gui elements.
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+
 (let ((dir (file-name-directory (or load-file-name buffer-file-name))))
   (add-to-list 'load-path (expand-file-name "lib/packed" dir))
   (add-to-list 'load-path (expand-file-name "lib/auto-compile" dir)))
