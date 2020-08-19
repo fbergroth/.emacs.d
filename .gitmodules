@@ -152,6 +152,9 @@
 [submodule "flyspell-correct"]
 	path = lib/flyspell-correct
 	url = git@github.com:d12frosted/flyspell-correct.git
+[submodule "gcmh"]
+	path = lib/gcmh
+	url = git@gitlab.com:koral/gcmh.git
 [submodule "general"]
 	path = lib/general
 	url = git@github.com:noctuid/general.el.git

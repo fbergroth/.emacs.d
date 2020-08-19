@@ -1,5 +1,6 @@
 ;;; early-init.el --- earliest birds               -*- lexical-binding: t -*-
 
+(setq gc-cons-threshold most-positive-fixnum)
 (setq load-prefer-newer t)
 
 (let ((dir (file-name-directory (or load-file-name buffer-file-name))))

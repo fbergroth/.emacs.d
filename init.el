@@ -818,6 +818,10 @@
   (imap python-mode-map
         "C-p" 'fb/insert-set-trace))
 
+(use-package gcmh
+  :init
+  (gcmh-mode))
+
 (progn ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file
            (float-time (time-subtract (current-time)
