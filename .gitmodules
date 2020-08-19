@@ -261,9 +261,6 @@
 [submodule "prettier-js"]
 	path = lib/prettier-js
 	url = git@github.com:prettier/prettier-emacs.git
-[submodule "project"]
-	path = lib/project
-	url = git@github.com:emacsmirror/project.git
 [submodule "projectile"]
 	path = lib/projectile
 	url = git@github.com:bbatsov/projectile.git
