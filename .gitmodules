@@ -77,6 +77,9 @@
 [submodule "elisp-slime-nav"]
 	path = lib/elisp-slime-nav
 	url = git@github.com:purcell/elisp-slime-nav.git
+[submodule "elm-mode"]
+	path = lib/elm-mode
+	url = git@github.com:jcollard/elm-mode.git
 [submodule "emacs-tree-sitter"]
 	path = lib/emacs-tree-sitter
 	url = git@github.com:ubolonton/emacs-tree-sitter.git
@@ -270,6 +273,9 @@
 [submodule "pyvenv"]
 	path = lib/pyvenv
 	url = git@github.com:jorgenschaefer/pyvenv.git
+[submodule "reformatter"]
+	path = lib/reformatter
+	url = git@github.com:purcell/reformatter.el.git
 [submodule "restart-emacs"]
 	path = lib/restart-emacs
 	url = git@github.com:iqbalansari/restart-emacs.git

@@ -384,6 +384,7 @@
   (python-mode . my/eglot-fmt-before-save)
   (c++-mode . my/eglot-ensure)
   (c++-mode . my/eglot-fmt-before-save)
+  (elm-mode . my/eglot-ensure)
   :custom
   (eglot-autoshutdown t)
 
@@ -735,10 +736,15 @@
 
 (use-package yaml-mode)
 
+(use-package elm-mode
+  :config
+  (define-key elm-mode-map (kbd "M-.") nil))
+
 (use-package project
   :init
   (defun my-project-try-files (dir)
-    (when-let (parent (or (locate-dominating-file dir "pyproject.toml")
+    (when-let (parent (or (locate-dominating-file dir "elm.json")
+                          (locate-dominating-file dir "pyproject.toml")
                           (locate-dominating-file dir "compile_commands.json")))
       `(transient . ,parent)))
 
