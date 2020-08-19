@@ -9,13 +9,11 @@
   (setq user-init-file (or load-file-name buffer-file-name))
   (setq user-emacs-directory (file-name-directory user-init-file))
   (message "Loading %s..." user-init-file)
-  (setq package-enable-at-startup nil)
   (setq inhibit-startup-buffer-menu t)
   (setq inhibit-startup-screen t)
   (setq inhibit-startup-echo-area-message "locutus")
   (setq initial-buffer-choice t)
   (setq initial-scratch-message "")
-  (setq load-prefer-newer t)
   (setq enable-recursive-minibuffers t)
   (setq sentence-end-double-space nil)
   (setq-default fill-column 80)
@@ -48,18 +46,12 @@
 (use-package diminish)
 
 (use-package auto-compile
-  :demand t
-  :init
+  :config
   (setq auto-compile-display-buffer nil)
   (setq auto-compile-mode-line-counter t)
   (setq auto-compile-source-recreate-deletes-dest t)
   (setq auto-compile-toggle-deletes-nonlib-dest t)
-  (setq auto-compile-update-autoloads t)
-  :hook
-  (auto-compile-inhibit-compile . auto-compile-inhibit-compile-detached-git-head)
-  :config
-  (auto-compile-on-load-mode)
-  (auto-compile-on-save-mode))
+  (setq auto-compile-update-autoloads t))
 
 (use-package no-littering
   :demand t)
