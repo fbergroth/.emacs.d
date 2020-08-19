@@ -364,12 +364,6 @@
   (when buffer-file-name
     (eglot-ensure)))
 
-(use-package flymake
-  :load-path "~/.emacs.d/lisp")
-
-(use-package jsonrpc
-  :load-path "~/.emacs.d/lisp")
-
 (use-package eglot
   :general
   (my-leader

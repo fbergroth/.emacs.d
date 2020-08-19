@@ -203,9 +203,6 @@
 [submodule "json-snatcher"]
 	path = lib/json-snatcher
 	url = git@github.com:Sterlingg/json-snatcher.git
-[submodule "jsonrpc"]
-	path = lib/jsonrpc
-	url = git@github.com:emacsmirror/jsonrpc.git
 [submodule "less-css-mode"]
 	path = lib/less-css-mode
 	url = git@github.com:purcell/less-css-mode.git
