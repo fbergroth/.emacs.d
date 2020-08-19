@@ -778,6 +778,10 @@
   (imap python-mode-map
         "C-p" 'fb/insert-set-trace))
 
+(use-package dumb-jump
+  :init
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+
 (use-package so-long
   :demand t
   :config
