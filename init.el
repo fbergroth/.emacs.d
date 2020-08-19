@@ -778,6 +778,12 @@
   (imap python-mode-map
         "C-p" 'fb/insert-set-trace))
 
+(use-package so-long
+  :demand t
+  :config
+  (setq so-long-max-lines 100)
+  (global-so-long-mode))
+
 (use-package gcmh
   :init
   (gcmh-mode))
