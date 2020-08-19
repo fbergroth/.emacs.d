@@ -309,11 +309,6 @@
   :init
   (global-evil-visualstar-mode))
 
-(use-package exec-path-from-shell
-  :demand t
-  :config
-  (exec-path-from-shell-initialize))
-
 (use-package executable
   :init
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p))

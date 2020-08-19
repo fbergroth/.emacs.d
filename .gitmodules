@@ -119,9 +119,6 @@
 [submodule "evil-visualstar"]
 	path = lib/evil-visualstar
 	url = git@github.com:bling/evil-visualstar.git
-[submodule "exec-path-from-shell"]
-	path = lib/exec-path-from-shell
-	url = git@github.com:purcell/exec-path-from-shell.git
 [submodule "eyebrowse"]
 	path = lib/eyebrowse
 	url = git@github.com:wasamasa/eyebrowse.git
