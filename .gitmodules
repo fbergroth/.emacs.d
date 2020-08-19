@@ -122,9 +122,6 @@
 [submodule "evil-visualstar"]
 	path = lib/evil-visualstar
 	url = git@github.com:bling/evil-visualstar.git
-[submodule "eyebrowse"]
-	path = lib/eyebrowse
-	url = git@github.com:wasamasa/eyebrowse.git
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git

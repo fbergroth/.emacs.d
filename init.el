@@ -160,8 +160,7 @@
    "sg"  'counsel-git-grep)
   :init (counsel-mode)
   :config
-  (setq counsel-git-cmd "git ls-files -z --full-name --recurse-submodules --")
-  (setq counsel-rg-base-command "rg -i --no-heading --line-number --color never --max-columns 120 %s ."))
+  (setq counsel-git-cmd "git ls-files -z --full-name --recurse-submodules --"))
 
 (use-package counsel-projectile
   :general
@@ -313,29 +312,6 @@
   :init
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p))
 
-(use-package lsp-mode
-  :disabled t
-  :general
-  (my-leader
-    :keymaps 'lsp-mode-map
-    "=" '(lsp-format-buffer :wk "fmt"))
-  :hook
-  (python-mode . lsp)
-  (c++-mode . lsp)
-  ;; (vue-mode . lsp)
-
-  :config
-  (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\.venv$")
-  (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\.ipynb_checkpoints$")
-  (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\.mypy_cache$")
-  (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\.pytest_cache$")
-  (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\.ccls-cache$")
-
-
-  (setq lsp-enable-snippet nil)
-
-  )
-
 (use-package js
   :general
   (:keymap 'js-mode-map
@@ -376,12 +352,6 @@
    '((pyls . ((configurationSources . ["flake8"])
               (plugins (flake8 (enabled . t))))))))
 
-(use-package eyebrowse
-  :config
-  (eyebrowse-setup-opinionated-keys)
-  (eyebrowse-mode)
-  (eyebrowse-switch-to-window-config-1))
-
 (use-package flx)
 
 (use-package flyspell
@@ -389,9 +359,7 @@
   :config
   (setq flyspell-issue-message-flag nil
         flyspell-issue-welcome-flag nil)
-  (add-hook 'text-mode-hook 'flyspell-mode)
-  ;; (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-  )
+  (add-hook 'text-mode-hook 'flyspell-mode))
 
 (use-package flyspell-correct-ivy
   :general
@@ -435,9 +403,7 @@
 
 (use-package hl-todo
   :init
-  (global-hl-todo-mode)
-  :config
-  (setq hl-todo-activate-in-modes '(prog-mode)))
+  (global-hl-todo-mode))
 
 (use-package hydra)
 
@@ -585,7 +551,7 @@
 
 (use-package pyvenv
   :hook (python-mode . my-pyvenv-activate-local)
-  :init
+  :preface
   (defun my-pyvenv-activate-local ()
     (interactive)
     (when-let ((root (locate-dominating-file
@@ -640,7 +606,6 @@
   )
 
 (use-package doom-modeline
-  ;; :disabled t ;; TODO
   :custom
   (doom-modeline-icon nil)
   (doom-modeline-height 25)
@@ -736,17 +701,6 @@
   (nmap dired-mode-map
         "P" 'pack-dired-dwim))
 
-
-(use-package cc-mode
-  ;; :hook
-  ;; (c++-mode . lsp)
-  ;; (c++-mode . my-lsp-format-buffer-hook)
-  :init
-  ;; (defun my-lsp-format-buffer-hook ()
-  ;;   (add-hook 'before-save-hook 'lsp-format-buffer nil t))
-  ;; )
-  )
-
 (use-package rust-mode
   :init
   (setq rust-format-on-save t))
@@ -755,7 +709,6 @@
 (use-package flymake-diagnostic-at-point
   :hook (flymake-mode . flymake-diagnostic-at-point-mode)
   :custom
-  ;; (flymake-diagnostic-at-point-display-diagnostic-function 'flymake-diagnostic-at-point-display-minibuffer)
   (flymake-diagnostic-at-point-error-prefix nil)
   :after flymake)
 
