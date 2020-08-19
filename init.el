@@ -371,7 +371,6 @@
   :load-path "~/.emacs.d/lisp")
 
 (use-package eglot
-  ;; :disabled t
   :general
   (my-leader
    :keymaps 'eglot-mode-map
@@ -384,34 +383,9 @@
   (elm-mode . my/eglot-ensure)
   :custom
   (eglot-autoshutdown t)
-
-
-  :config
-  (setq eglot-workspace-configuration
-        '((pyls . ((configurationSources . ["flake8"])))))
-
-
-  ;; (push '((c++-mode c-mode) . ("clangd-8")) eglot-server-programs)
-
-  ;; (setq eglot-workspace-configuration
-  ;;       '((pyls . ((plugins . ((jedi_definition . ((follow_imports . t)
-  ;;                                                  (follow_builtin_imports . t)))
-  ;;                              (jedi_completion . ((include_params . nil)))))
-  ;;                  (configurationSources . ["flake8"])))))
-
-
-
-
-  ;; (add-hook 'python-mode-hook
-  ;;           (lambda ()
-  ;;             (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
-  ;; (add-hook 'c++-mode-hook
-  ;;           (lambda ()
-  ;;             (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
-  ;; (advice-add 'eglot--format-markup :filter-return
-  ;;             (lambda (r)
-  ;;             (replace-regexp-in-string "\\\\\\*" "*" r))))
-  )
+  (eglot-workspace-configuration
+   '((pyls . ((configurationSources . ["flake8"])
+              (plugins (flake8 (enabled . t))))))))
 
 (use-package eyebrowse
   :config
