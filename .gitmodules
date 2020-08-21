@@ -1,9 +1,6 @@
 [borg]
 	pushDefault = locutus
 	collective = emacsg
-[submodule "alert"]
-	path = lib/alert
-	url = git@github.com:jwiegley/alert.git
 [submodule "all-the-icons"]
 	path = lib/all-the-icons
 	url = git@github.com:domtronn/all-the-icons.el.git
@@ -131,18 +128,6 @@
 [submodule "flx"]
 	path = lib/flx
 	url = git@github.com:lewang/flx.git
-[submodule "flycheck"]
-	path = lib/flycheck
-	url = git@github.com:flycheck/flycheck.git
-[submodule "flycheck-cask"]
-	path = lib/flycheck-cask
-	url = git@github.com:flycheck/flycheck-cask.git
-[submodule "flycheck-package"]
-	path = lib/flycheck-package
-	url = git@github.com:purcell/flycheck-package.git
-[submodule "flycheck-pos-tip"]
-	path = lib/flycheck-pos-tip
-	url = git@github.com:flycheck/flycheck-pos-tip.git
 [submodule "flymake-diagnostic-at-point"]
 	path = lib/flymake-diagnostic-at-point
 	url = git@github.com:meqif/flymake-diagnostic-at-point.git

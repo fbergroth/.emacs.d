@@ -94,10 +94,6 @@
 
 ;;; Long tail
 
-(use-package alert
-  :config
-  (setq alert-default-style 'libnotify))
-
 (use-package autorevert
   :init
   (global-auto-revert-mode)
