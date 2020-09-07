@@ -85,6 +85,7 @@
    "bs"  (fn! switch-to-buffer "*scratch*")
    "bm"  'view-echo-area-messages
    "d"   'dired-jump
+   "D"   'dired-jump-other-window
    "TAB" 'mode-line-other-buffer))
 
 (progn ;     startup
@@ -107,7 +108,6 @@
          (emacs-lisp-mode . cl-lib-highlight-warn-cl-initialize)))
 
 (use-package company
-  :diminish (company-mode . " a")
   :init
   (global-company-mode)
   :config
@@ -141,7 +141,6 @@
   (setq compilation-scroll-output t))
 
 (use-package counsel
-  :diminish counsel-mode
   :general
   (my-leader
    "SPC" 'counsel-M-x
@@ -236,7 +235,6 @@
         ediff-window-setup-function 'ediff-setup-windows-plain))
 
 (use-package eldoc
-  :diminish eldoc-mode
   :config (global-eldoc-mode))
 
 (use-package elide-head
@@ -251,13 +249,11 @@
 
 
 (use-package elisp-slime-nav
-  :diminish elisp-slime-nav-mode
   :general
   (my-mode-leader
    :keymaps 'emacs-lisp-mode-map
    "h" 'elisp-slime-nav-describe-elisp-thing-at-point
    "g" 'elisp-slime-nav-find-elisp-thing-at-point)
-  :diminish elisp-slime-nav-mode
   :init
   (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode))
 
@@ -376,7 +372,6 @@
 (use-package flx)
 
 (use-package flyspell
-  :diminish (flyspell-mode . " s")
   :config
   (setq flyspell-issue-message-flag nil
         flyspell-issue-welcome-flag nil)
@@ -435,20 +430,20 @@
   (setq isearch-allow-scroll t))
 
 (use-package ivy
-  :diminish ivy-mode
   :init (ivy-mode)
   :config
   (define-key ivy-minibuffer-map (kbd "C-w") #'ivy-backward-kill-word)
   (setq ivy-use-virtual-buffers t))
 
 (use-package ivy-xref
-  :init (if (< emacs-major-version 27)
-            (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)
-          (setq xref-show-definitions-function #'ivy-xref-show-defs)))
+  :custom
+  (xref-show-xrefs-function 'ivy-xref-show-xrefs)
+  (xref-show-definitions-function 'ivy-xref-show-defs))
 
 (use-package ivy-hydra)
 
 (use-package ivy-rich
+  :after ivy
   :config (ivy-rich-mode))
 
 (use-package js2-mode
@@ -465,9 +460,6 @@
   :disabled t
   :init (lisp-extra-font-lock-global-mode))
 
-(use-package reveal
-  :diminish reveal-mode)
-
 (use-package lisp-mode
   :preface
   (defun indent-spaces-mode ()
@@ -475,9 +467,6 @@
   :hook ((emacs-lisp-mode . outline-minor-mode)
          (emacs-lisp-mode . reveal-mode)
          (lisp-interaction-mode . indent-spaces-mode)))
-
-(use-package outline
-  :diminish outline-minor-mode)
 
 (use-package macrostep
   :general
@@ -525,7 +514,6 @@
 
 
 (use-package page-break-lines
-  :diminish page-break-lines-mode
   :init (global-page-break-lines-mode))
 
 (use-package paren
@@ -540,7 +528,6 @@
   :hook ((css-mode js2-mode json-mode less-css-mode) . prettier-js-mode))
 
 (use-package projectile
-  :diminish projectile-mode
   :general
   (my-leader
    :keymaps 'projectile-mode-map
@@ -549,15 +536,13 @@
   :init
   (projectile-mode)
   :config
-  (setq projectile-completion-system 'ivy)
-  :diminish projectile-mode)
+  (setq projectile-completion-system 'ivy))
 
 (use-package projectile-git-autofetch
   :disabled t
   :after magit
   :config
-  (projectile-git-autofetch-mode)
-  :diminish (projectile-git-autofetch-mode . "↓"))
+  (projectile-git-autofetch-mode))
 
 (use-package py-isort
   :disabled t
@@ -590,10 +575,10 @@
   (my-leader "qr" 'restart-emacs))
 
 (use-package savehist
-  :config (savehist-mode))
+  :init (savehist-mode))
 
 (use-package saveplace
-  :config (save-place-mode))
+  :init (save-place-mode))
 
 (use-package sh-script
   :config
@@ -646,9 +631,6 @@
   (require 'tree-sitter-langs)
   (global-tree-sitter-mode))
 
-(use-package undo-tree
-  :diminish undo-tree-mode)
-
 (use-package unfill
   :general ([remap fill-paragraph] 'unfill-toggle))
 
@@ -664,14 +646,12 @@
   (which-key-mode))
 
 (use-package whitespace
-  :diminish (whitespace-mode . " w")
   :hook (prog-mode . whitespace-mode)
   :config
   (setq whitespace-style '(face tab-mark tabs trailing)))
 
 (use-package whitespace-cleanup-mode
-  :init (global-whitespace-cleanup-mode)
-  :diminish (whitespace-cleanup-mode . " W"))
+  :init (global-whitespace-cleanup-mode))
 
 (use-package winner
   :general
@@ -698,12 +678,12 @@
 
 
 (use-package vterm
-  :hook
-  (vterm-mode . my-vterm-hook)
-  :init
+  :preface
   (defun my-vterm-hook ()
     (setq-local global-hl-line-mode nil)
-    (setq-local truncate-lines t)))
+    (setq-local truncate-lines t))
+  :hook
+  (vterm-mode . my-vterm-hook))
 
 
 (use-package vterm-toggle
