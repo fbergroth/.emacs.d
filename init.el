@@ -199,9 +199,34 @@
 (use-package dockerfile-mode)
 
 (use-package doom-themes
+  :disabled t
   :custom (doom-one-brighter-comments t)
   :init
   (load-theme 'doom-one 'no-confirm))
+
+
+(use-package modus-vivendi-theme
+  :custom
+  (modus-vivendi-theme-slanted-constructs t)
+  (modus-vivendi-theme-bold-constructs t)
+  (modus-vivendi-theme-faint-syntax nil)
+  (modus-vivendi-theme-fringes 'subtle)
+  (modus-vivendi-theme-intense-paren-match t)
+  (modus-vivendi-theme-override-colors-alist
+   '(("bg-main" . "#100b17")
+     ("bg-dim" . "#161129")
+     ("bg-alt" . "#181732")
+     ("bg-hl-line" . "#191628")
+     ("bg-active" . "#282e46")
+     ("bg-inactive" . "#1a1e39")
+     ("bg-region" . "#393a53")
+     ("bg-header" . "#202037")
+     ("bg-tab-bar" . "#262b41")
+     ("bg-tab-active" . "#120f18")
+     ("bg-tab-inactive" . "#3a3a5a")
+     ("fg-unfocused" . "#9a9aab")))
+  :init
+  (load-theme 'modus-vivendi 'no-confirm))
 
 (use-package ediff
   :hook (ediff-quit . winner-undo)
