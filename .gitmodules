@@ -83,6 +83,7 @@
 [submodule "emacs-tree-sitter"]
 	path = lib/emacs-tree-sitter
 	url = git@github.com:ubolonton/emacs-tree-sitter.git
+	load-path = core
 	load-path = lisp
 	load-path = langs
 [submodule "emacsql"]
