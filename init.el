@@ -40,7 +40,9 @@
   (setq use-package-compute-statistics t)
   (require  'use-package))
 
-(use-package diminish)
+(use-package gcmh
+  :init
+  (gcmh-mode))
 
 (use-package auto-compile
   :config
@@ -59,9 +61,10 @@
   (when (file-exists-p custom-file)
     (load custom-file)))
 
+
 (use-package general
   :demand t
-  :config
+  :preface
   (general-evil-setup 'short)
 
   (general-create-definer
@@ -78,6 +81,7 @@
    :non-normal-prefix "C-,"
    :prefix ",")
 
+  :config
   (my-leader
    "u"   'universal-argument
    "fi"  (fn! find-file user-init-file)
@@ -187,6 +191,8 @@
   :config
   (default-text-scale-mode))
 
+(use-package i3wm-config-mode)
+
 (use-package dired-x
   :hook (dired-mode . dired-omit-mode)
   :config
@@ -211,6 +217,7 @@
   (modus-vivendi-theme-faint-syntax nil)
   (modus-vivendi-theme-fringes 'subtle)
   (modus-vivendi-theme-intense-paren-match t)
+  (modus-vivendi-theme-variable-pitch-headings t)
   (modus-vivendi-theme-override-colors-alist
    '(("bg-main" . "#100b17")
      ("bg-dim" . "#161129")
@@ -270,6 +277,7 @@
   (evil-want-C-u-scroll t)
   (evil-want-C-w-in-emacs-state t)
   (evil-want-keybinding nil)
+  (evil-undo-system 'undo-redo)
   :init (evil-mode)
   :config
 
@@ -351,6 +359,12 @@
 (defun my/eglot-ensure ()
   (when buffer-file-name
     (eglot-ensure)))
+
+
+(use-package cc-mode
+  :hook
+  (c++-mode . electric-pair-mode)
+  (c++-mode . yas-minor-mode))
 
 (use-package eglot
   :general
@@ -551,9 +565,60 @@
 
 
 (use-package org
+  :commands fb/org-present-mode
+  :general
+  (my-mode-leader
+   :keymaps 'org-mode-map
+   "p" 'fb/org-present-mode
+   "w" 'unfill-toggle
+   "o" (fn! org-open-at-point '(16)))
+  (nmap
+   :definer 'minor-mode
+   :keymaps 'fb/org-present-mode
+   "[" 'org-previous-link
+   "]" 'org-next-link
+   "RET" (fn! org-open-at-point '(16))
+   "<left>" 'org-tree-slide-move-previous-tree
+   "<right>" 'org-tree-slide-move-next-tree
+   "<up>" 'org-tree-slide-content
+   "<down>" 'org-tree-slide-display-header-toggle
+   "q" 'fb/org-present-mode)
   :config
+  (setq org-hide-emphasis-markers nil)
   (org-babel-do-load-languages 'org-babel-load-languages
-                               '((shell . t))))
+                               '((shell . t)))
+
+  (define-minor-mode fb/org-present-mode
+    ""
+    :lighter ""
+    :keymap (make-sparse-keymap)
+    (if fb/org-present-mode
+        (progn
+          (setq org-hide-emphasis-markers t)
+          (org-tree-slide-mode 1)
+          (olivetti-mode 1)
+          (set-window-fringes (selected-window) 0 0)
+          (org-superstar-mode 1)
+          (org-indent-mode 1))
+      (org-tree-slide-mode -1)
+      (olivetti-mode -1)
+      (org-superstar-mode -1)
+      (org-indent-mode -1)
+      (set-window-fringes (selected-window) nil))))
+
+(use-package org-superstar
+  :after org
+  :config
+  (setq org-superstar-remove-leading-stars t))
+
+(use-package org-tree-slide
+  :after org
+  :config
+  (org-tree-slide-simple-profile))
+
+(use-package olivetti
+  :custom
+  (olivetti-body-width 0.7))
 
 (use-package pyvenv
   :hook (python-mode . my-pyvenv-activate-local)
@@ -695,6 +760,11 @@
   ;; :hook (eglot--managed-mode . eldoc-box-hover-mode)
   )
 
+(use-package esup
+  :custom
+  (esup-depth 0))
+
+
 
 (use-package pack
   :load-path "~/code/pack-el"
@@ -741,10 +811,6 @@
   :config
   (setq so-long-max-lines 100)
   (global-so-long-mode))
-
-(use-package gcmh
-  :init
-  (gcmh-mode))
 
 (progn ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file

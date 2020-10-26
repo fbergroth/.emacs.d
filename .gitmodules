@@ -95,6 +95,9 @@
 [submodule "eros"]
 	path = lib/eros
 	url = git@github.com:xiongtx/eros.git
+[submodule "esup"]
+	path = lib/esup
+	url = git@github.com:jschaf/esup.git
 [submodule "evil"]
 	path = lib/evil
 	url = git@github.com:emacs-evil/evil.git
@@ -225,6 +228,15 @@
 [submodule "no-littering"]
 	path = lib/no-littering
 	url = git@github.com:emacscollective/no-littering.git
+[submodule "olivetti"]
+	path = lib/olivetti
+	url = git@github.com:rnkn/olivetti.git
+[submodule "org-superstar"]
+	path = lib/org-superstar
+	url = git@github.com:integral-dw/org-superstar-mode.git
+[submodule "org-tree-slide"]
+	path = lib/org-tree-slide
+	url = git@github.com:takaxp/org-tree-slide.git
 [submodule "package-lint"]
 	path = lib/package-lint
 	url = git@github.com:purcell/package-lint.git
@@ -261,6 +273,9 @@
 [submodule "pyvenv"]
 	path = lib/pyvenv
 	url = git@github.com:jorgenschaefer/pyvenv.git
+[submodule "rainbow-mode"]
+	path = lib/rainbow-mode
+	url = git@github.com:emacsmirror/rainbow-mode.git
 [submodule "reformatter"]
 	path = lib/reformatter
 	url = git@github.com:purcell/reformatter.el.git
@@ -285,9 +300,6 @@
 [submodule "transient"]
 	path = lib/transient
 	url = git@github.com:magit/transient.git
-[submodule "undo-tree"]
-	path = lib/undo-tree
-	url = http://www.dr-qubit.org/git/undo-tree.git
 [submodule "unfill"]
 	path = lib/unfill
 	url = git@github.com:purcell/unfill.git
