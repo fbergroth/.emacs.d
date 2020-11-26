@@ -114,9 +114,6 @@
 [submodule "evil-ediff"]
 	path = lib/evil-ediff
 	url = git@github.com:emacs-evil/evil-ediff.git
-[submodule "evil-magit"]
-	path = lib/evil-magit
-	url = git@github.com:emacs-evil/evil-magit.git
 [submodule "evil-multiedit"]
 	path = lib/evil-multiedit
 	url = git@github.com:hlissner/evil-multiedit.git

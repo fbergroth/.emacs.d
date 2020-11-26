@@ -306,10 +306,6 @@
   :config
   (evil-ediff-init))
 
-(use-package evil-magit
-  :demand t
-  :after magit)
-
 (use-package evil-multiedit
   :demand t
   :config
