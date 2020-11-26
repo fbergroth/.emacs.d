@@ -812,6 +812,17 @@
   (setq so-long-max-lines 100)
   (global-so-long-mode))
 
+(use-package ivy-posframe
+  :disabled t
+  :after ivy
+  :init
+  (ivy-posframe-mode))
+
+(use-package company-posframe
+  :after company
+  :init
+  (company-posframe-mode))
+
 (progn ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file
            (float-time (time-subtract (current-time)

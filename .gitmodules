@@ -28,6 +28,9 @@
 [submodule "company"]
 	path = lib/company
 	url = git@github.com:company-mode/company-mode.git
+[submodule "company-posframe"]
+	path = lib/company-posframe
+	url = git@github.com:tumashu/company-posframe.git
 [submodule "company-quickhelp"]
 	path = lib/company-quickhelp
 	url = git@github.com:expez/company-quickhelp.git
@@ -174,6 +177,9 @@
 [submodule "ivy"]
 	path = lib/ivy
 	url = git@github.com:abo-abo/swiper.git
+[submodule "ivy-posframe"]
+	path = lib/ivy-posframe
+	url = git@github.com:tumashu/ivy-posframe.git
 [submodule "ivy-rich"]
 	path = lib/ivy-rich
 	url = git@github.com:Yevgnen/ivy-rich.git
@@ -262,6 +268,9 @@
 [submodule "pos-tip"]
 	path = lib/pos-tip
 	url = git@github.com:pitkali/pos-tip.git
+[submodule "posframe"]
+	path = lib/posframe
+	url = git@github.com:tumashu/posframe.git
 [submodule "prettier-js"]
 	path = lib/prettier-js
 	url = git@github.com:prettier/prettier-emacs.git
