@@ -111,28 +111,8 @@
   :hook ((emacs-lisp-mode . cl-lib-highlight-initialize)
          (emacs-lisp-mode . cl-lib-highlight-warn-cl-initialize)))
 
-(use-package company
-  :init
-  (global-company-mode)
-  :config
-  (setq company-minimum-prefix-length 2
-        company-idle-delay 0.1
-        company-tooltip-align-annotations t
-        company-tooltip-flip-when-above t
-        company-dabbrev-downcase nil
-        company-dabbrev-ignore-case t))
-
-(use-package company-quickhelp
-  :after company
-  :disabled t
-  :init
-  (company-quickhelp-mode 1)
-  (define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin))
-
-(use-package company-shell
-  :after company
-  :init
-  (add-to-list 'company-backends 'company-shell))
+(use-package corfu
+  :init (corfu-global-mode))
 
 (use-package compile
   :config
@@ -144,32 +124,50 @@
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
   (setq compilation-scroll-output t))
 
-(use-package counsel
+(use-package marginalia
+  :init (marginalia-mode)
+  :config
+  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
+
+(use-package embark
+  :general
+  ("C-'" 'embark-act
+   "C-h B" 'embark-bindings)
+  (:keymaps '(minibuffer-local-map)
+            "C-o" 'embark-export)
+  :init (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package consult
   :general
   (my-leader
-   "SPC" 'counsel-M-x
-   "r"  'ivy-resume
-   "bb"  'ivy-switch-buffer
-   "fg"  'counsel-git
-   "ff"  'counsel-find-file
-   "fl"  'counsel-file-jump
-   "fL"  'counsel-locate
-   "fr"  'counsel-recentf
-   "ss"  'counsel-ag
-   "sg"  'counsel-git-grep)
-  :init (counsel-mode)
-  :config
-  (setq counsel-git-cmd "git ls-files -z --full-name --recurse-submodules --"))
+    "*" (fn! consult-ripgrep nil (thing-at-point 'symbol)))
+  ([remap switch-to-buffer] 'consult-buffer)
 
-(use-package counsel-projectile
-  :general
-  (my-leader "*" 'counsel-projectile-rg)
-  :init
-  (counsel-projectile-mode)
   :config
-  (setq counsel-projectile-rg-initial-input '(ivy-thing-at-point))
-  (define-key projectile-mode-map [remap projectile-ag] #'counsel-projectile-rg)
-  (define-key projectile-mode-map [remap projectile-find-file] #'counsel-git))
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  (setq consult-project-root-function
+        (fn! -some-> (project-current) (project-root))))
+
+(use-package embark-consult
+  :general
+  (my-leader
+   "s" embark-consult-search-map)
+  :after (embark consult)
+  :demand t
+  :hook (embark-collect-mode . embark-consult-preview-minor-mode))
+
+(use-package vertico
+  :init
+  (vertico-mode))
+
+(use-package orderless
+  :demand t
+  :init
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles . (partial-completion))))))
 
 (use-package dash
   :config (dash-enable-font-lock))
@@ -191,8 +189,6 @@
   :config
   (default-text-scale-mode))
 
-(use-package i3wm-config-mode)
-
 (use-package dired-x
   :hook (dired-mode . dired-omit-mode)
   :config
@@ -203,36 +199,14 @@
 
 (use-package dockerfile-mode)
 
-(use-package doom-themes
-  :disabled t
-  :custom (doom-one-brighter-comments t)
-  :init
-  (load-theme 'doom-one 'no-confirm))
-
-
 (use-package modus-vivendi-theme
   :custom
-  (modus-vivendi-theme-slanted-constructs t)
-  (modus-vivendi-theme-bold-constructs t)
-  (modus-vivendi-theme-faint-syntax nil)
-  (modus-vivendi-theme-fringes 'subtle)
-  (modus-vivendi-theme-intense-paren-match t)
-  (modus-vivendi-theme-variable-pitch-headings t)
-  (modus-vivendi-theme-override-colors-alist
-   '(("bg-main" . "#100b17")
-     ("bg-dim" . "#161129")
-     ("bg-alt" . "#181732")
-     ("bg-hl-line" . "#191628")
-     ("bg-active" . "#282e46")
-     ("bg-inactive" . "#1a1e39")
-     ("bg-region" . "#393a53")
-     ("bg-header" . "#202037")
-     ("bg-tab-bar" . "#262b41")
-     ("bg-tab-active" . "#120f18")
-     ("bg-tab-inactive" . "#3a3a5a")
-     ("fg-unfocused" . "#9a9aab")))
+  (modus-themes-slanted-constructs t)
+  (modus-themes-bold-constructs t)
+  (modus-themes-fringes 'subtle)
+  (modus-themes-variable-pitch-headings t)
   :init
-  (load-theme 'modus-vivendi 'no-confirm))
+  (modus-themes-load-vivendi))
 
 (use-package ediff
   :hook (ediff-quit . winner-undo)
@@ -253,16 +227,6 @@
   (defun indicate-buffer-boundaries-left ()
     (setq indicate-buffer-boundaries 'left))
   (add-hook 'prog-mode-hook #'indicate-buffer-boundaries-left))
-
-
-(use-package elisp-slime-nav
-  :general
-  (my-mode-leader
-   :keymaps 'emacs-lisp-mode-map
-   "h" 'elisp-slime-nav-describe-elisp-thing-at-point
-   "g" 'elisp-slime-nav-find-elisp-thing-at-point)
-  :init
-  (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode))
 
 (use-package eros
   :init (eros-mode))
@@ -298,7 +262,6 @@
     "M-p" 'evil-collection-unimpaired-previous-error
     "C-M-n" 'next-error
     "C-M-p" 'previous-error)
-  :custom (evil-collection-setup-minibuffer t)
   :init (evil-collection-init))
 
 (use-package evil-ediff
@@ -338,24 +301,11 @@
   (:keymap 'js-mode-map
             [remap js-find-symbol] 'xref-find-definitions))
 
-(use-package lsp-ui
-  :disabled t
-  :general
-  (:keymaps 'lsp-ui-mode-map
-            [remap xref-find-definitions] 'lsp-ui-peek-find-definitions
-            [remap xref-find-references] 'lsp-ui-peek-find-references
-            [remap evil-lookup] 'lsp-ui-doc-show)
-  :custom
-  (lsp-ui-sideline-enable nil)
-  (lsp-ui-doc-enable nil))
-
-
 (defun my/eglot-fmt-before-save ()
   (add-hook 'before-save-hook 'eglot-format-buffer nil t))
 (defun my/eglot-ensure ()
   (when buffer-file-name
     (eglot-ensure)))
-
 
 (use-package cc-mode
   :hook
@@ -379,15 +329,13 @@
    '((pyls . ((configurationSources . ["flake8"])
               (plugins (flake8 (enabled . t))))))))
 
-(use-package flx)
-
 (use-package flyspell
   :config
   (setq flyspell-issue-message-flag nil
         flyspell-issue-welcome-flag nil)
   (add-hook 'text-mode-hook 'flyspell-mode))
 
-(use-package flyspell-correct-ivy
+(use-package flyspell-correct
   :general
   (:keymaps 'flyspell-mode-map
             "C-;" 'flyspell-correct-previous))
@@ -399,7 +347,6 @@
   :config (temp-buffer-resize-mode))
 
 (use-package highlight-escape-sequences
-  :disabled t
   :config
   (hes-mode))
 
@@ -439,23 +386,6 @@
 (progn ;    `isearch'
   (setq isearch-allow-scroll t))
 
-(use-package ivy
-  :init (ivy-mode)
-  :config
-  (define-key ivy-minibuffer-map (kbd "C-w") #'ivy-backward-kill-word)
-  (setq ivy-use-virtual-buffers t))
-
-(use-package ivy-xref
-  :custom
-  (xref-show-xrefs-function 'ivy-xref-show-xrefs)
-  (xref-show-definitions-function 'ivy-xref-show-defs))
-
-(use-package ivy-hydra)
-
-(use-package ivy-rich
-  :after ivy
-  :config (ivy-rich-mode))
-
 (use-package js2-mode
   :mode (("\\.js\\'" . js2-mode))
   :config
@@ -488,7 +418,11 @@
   (evil-make-overriding-map macrostep-keymap 'motion))
 
 (use-package magit
+  :general
+  (my-leader
+    "g" 'magit-file-dispatch)
   :custom
+  (magit-define-global-key-bindings nil)
   (magit-repository-directories '(("~/code" . 1)))
   (magit-save-repository-buffers 'dontask)
   (magit-status-goto-file-position t)
@@ -503,6 +437,7 @@
 
 (use-package magit-todos
   :after magit
+  :disabled t
   :custom
   (magit-todos-exclude-globs '("*\.js\.map"))
   :init (magit-todos-mode))
@@ -511,17 +446,6 @@
   :init (setq Man-width 80))
 
 (use-package markdown-mode)
-
-(use-package material-theme
-  :disabled t
-  :init
-  (load-theme 'material t))
-
-(use-package zenburn-theme
-  :disabled t
-  :init
-  (load-theme 'zenburn t))
-
 
 (use-package page-break-lines
   :init (global-page-break-lines-mode))
@@ -536,29 +460,6 @@
 (use-package prettier-js
   :commands prettier-js
   :hook ((css-mode js2-mode json-mode less-css-mode) . prettier-js-mode))
-
-(use-package projectile
-  :general
-  (my-leader
-   :keymaps 'projectile-mode-map
-   "p" '(projectile-command-map :wk "project"))
-  ;; :custom (projectile-keymap-prefix (kbd "SPC p"))
-  :init
-  (projectile-mode)
-  :config
-  (setq projectile-completion-system 'ivy))
-
-(use-package projectile-git-autofetch
-  :disabled t
-  :after magit
-  :config
-  (projectile-git-autofetch-mode))
-
-(use-package py-isort
-  :disabled t
-  :config
-  (add-hook 'before-save-hook 'py-isort-before-save))
-
 
 (use-package org
   :commands fb/org-present-mode
@@ -653,24 +554,9 @@
 
 (use-package smex)
 
-(defun my/ibuffer-setup ()
-  (ibuffer-projectile-set-filter-groups)
-  (unless (eq ibuffer-sorting-mode 'alphabetic)
-    (ibuffer-do-sort-by-alphabetic)))
-
-(use-package ibuffer-projectile
-  :hook (ibuffer . my/ibuffer-setup))
-
-(use-package smart-mode-line
-  :disabled t
-  :init
-  (setq sml/theme 'respectful)
-  (sml/setup))
-
 (use-package all-the-icons
   :custom
-  (all-the-icons-scale-factor 1.0)
-  )
+  (all-the-icons-scale-factor 1.0))
 
 (use-package doom-modeline
   :custom
@@ -728,14 +614,9 @@
   (define-key elm-mode-map (kbd "M-.") nil))
 
 (use-package project
-  :init
-  (defun my-project-try-files (dir)
-    (when-let (parent (or (locate-dominating-file dir "elm.json")
-                          (locate-dominating-file dir "pyproject.toml")
-                          (locate-dominating-file dir "compile_commands.json")))
-      `(transient . ,parent)))
-
-  (add-hook 'project-find-functions 'my-project-try-files))
+  :general
+  (my-leader
+   "p" project-prefix-map))
 
 
 (use-package vterm
@@ -751,16 +632,9 @@
   :general
   ("C-`" 'vterm-toggle))
 
-(use-package eldoc-box
-  :disabled t
-  ;; :hook (eglot--managed-mode . eldoc-box-hover-mode)
-  )
-
 (use-package esup
   :custom
   (esup-depth 0))
-
-
 
 (use-package pack
   :load-path "~/code/pack-el"
@@ -771,7 +645,6 @@
 (use-package rust-mode
   :init
   (setq rust-format-on-save t))
-
 
 (use-package flymake-diagnostic-at-point
   :hook (flymake-mode . flymake-diagnostic-at-point-mode)
@@ -807,17 +680,6 @@
   :config
   (setq so-long-max-lines 100)
   (global-so-long-mode))
-
-(use-package ivy-posframe
-  :disabled t
-  :after ivy
-  :init
-  (ivy-posframe-mode))
-
-(use-package company-posframe
-  :after company
-  :init
-  (company-posframe-mode))
 
 (progn ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file

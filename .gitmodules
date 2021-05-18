@@ -25,21 +25,12 @@
 [submodule "closql"]
 	path = lib/closql
 	url = git@github.com:emacscollective/closql.git
-[submodule "company"]
-	path = lib/company
-	url = git@github.com:company-mode/company-mode.git
-[submodule "company-posframe"]
-	path = lib/company-posframe
-	url = git@github.com:tumashu/company-posframe.git
-[submodule "company-quickhelp"]
-	path = lib/company-quickhelp
-	url = git@github.com:expez/company-quickhelp.git
-[submodule "company-shell"]
-	path = lib/company-shell
-	url = git@github.com:Alexander-Miller/company-shell.git
-[submodule "counsel-projectile"]
-	path = lib/counsel-projectile
-	url = git@github.com:ericdanan/counsel-projectile.git
+[submodule "consult"]
+	path = lib/consult
+	url = git@github.com:minad/consult.git
+[submodule "corfu"]
+	path = lib/corfu
+	url = git@github.com:minad/corfu.git
 [submodule "dash"]
 	path = lib/dash
 	url = git@github.com:magnars/dash.el.git
@@ -93,6 +84,9 @@
 	path = lib/emacsql
 	url = git@github.com:skeeto/emacsql.git
 	no-byte-compile = emacsql-pg.el
+[submodule "embark"]
+	path = lib/embark
+	url = git@github.com:oantolin/embark.git
 [submodule "epkg"]
 	path = lib/epkg
 	url = git@github.com:emacscollective/epkg.git
@@ -165,24 +159,9 @@
 [submodule "hydra"]
 	path = lib/hydra
 	url = git@github.com:abo-abo/hydra.git
-[submodule "ibuffer-projectile"]
-	path = lib/ibuffer-projectile
-	url = git@github.com:purcell/ibuffer-projectile.git
 [submodule "iedit"]
 	path = lib/iedit
 	url = git@github.com:victorhge/iedit.git
-[submodule "ivy"]
-	path = lib/ivy
-	url = git@github.com:abo-abo/swiper.git
-[submodule "ivy-posframe"]
-	path = lib/ivy-posframe
-	url = git@github.com:tumashu/ivy-posframe.git
-[submodule "ivy-rich"]
-	path = lib/ivy-rich
-	url = git@github.com:Yevgnen/ivy-rich.git
-[submodule "ivy-xref"]
-	path = lib/ivy-xref
-	url = git@github.com:alexmurray/ivy-xref.git
 [submodule "js2-mode"]
 	path = lib/js2-mode
 	url = git@github.com:mooz/js2-mode.git
@@ -217,12 +196,12 @@
 [submodule "magit-todos"]
 	path = lib/magit-todos
 	url = git@github.com:alphapapa/magit-todos.git
+[submodule "marginalia"]
+	path = lib/marginalia
+	url = git@github.com:minad/marginalia.git
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
-[submodule "material-theme"]
-	path = lib/material-theme
-	url = git@github.com:cpaulik/emacs-material-theme.git
 [submodule "memoize"]
 	path = lib/memoize
 	url = git@github.com:skeeto/emacs-memoize.git
@@ -235,6 +214,9 @@
 [submodule "olivetti"]
 	path = lib/olivetti
 	url = git@github.com:rnkn/olivetti.git
+[submodule "orderless"]
+	path = lib/orderless
+	url = git@github.com:oantolin/orderless.git
 [submodule "org-superstar"]
 	path = lib/org-superstar
 	url = git@github.com:integral-dw/org-superstar-mode.git
@@ -265,18 +247,9 @@
 [submodule "pos-tip"]
 	path = lib/pos-tip
 	url = git@github.com:pitkali/pos-tip.git
-[submodule "posframe"]
-	path = lib/posframe
-	url = git@github.com:tumashu/posframe.git
 [submodule "prettier-js"]
 	path = lib/prettier-js
 	url = git@github.com:prettier/prettier-emacs.git
-[submodule "projectile"]
-	path = lib/projectile
-	url = git@github.com:bbatsov/projectile.git
-[submodule "projectile-git-autofetch"]
-	path = lib/projectile-git-autofetch
-	url = git@github.com:andrmuel/projectile-git-autofetch.git
 [submodule "pyvenv"]
 	path = lib/pyvenv
 	url = git@github.com:jorgenschaefer/pyvenv.git
@@ -313,6 +286,9 @@
 [submodule "use-package"]
 	path = lib/use-package
 	url = git@github.com:jwiegley/use-package.git
+[submodule "vertico"]
+	path = lib/vertico
+	url = git@github.com:minad/vertico.git
 [submodule "vterm"]
 	path = lib/vterm
 	url = git@github.com:akermu/emacs-libvterm.git
