@@ -150,6 +150,13 @@
   (setq consult-project-root-function
         (fn! -some-> (project-current) (project-root))))
 
+(use-package affe
+  :after orderless
+  :config
+  (setq affe-regexp-function #'orderless-pattern-compiler
+        affe-highlight-function #'orderless-highlight-matches)
+  (setf (alist-get #'affe-grep consult-config) `(:preview-key ,(kbd "M-."))))
+
 (use-package embark-consult
   :general
   (my-leader
