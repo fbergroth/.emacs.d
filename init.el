@@ -125,9 +125,7 @@
   (setq compilation-scroll-output t))
 
 (use-package marginalia
-  :init (marginalia-mode)
-  :config
-  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
+  :init (marginalia-mode))
 
 (use-package embark
   :general
