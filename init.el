@@ -148,6 +148,12 @@
   (setq consult-project-root-function
         (fn! -some-> (project-current) (project-root))))
 
+(use-package consult-dir
+  :general
+  (:keymaps '(vertico-map)
+            "M-," 'consult-dir
+            "M-j" 'consult-dir-jump-file))
+
 (use-package affe
   :after orderless
   :config

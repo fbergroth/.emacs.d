@@ -31,6 +31,9 @@
 [submodule "consult"]
 	path = lib/consult
 	url = git@github.com:minad/consult.git
+[submodule "consult-dir"]
+	path = lib/consult-dir
+	url = git@github.com:karthink/consult-dir.git
 [submodule "corfu"]
 	path = lib/corfu
 	url = git@github.com:minad/corfu.git
