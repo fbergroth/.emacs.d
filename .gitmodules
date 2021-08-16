@@ -22,9 +22,6 @@
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
-[submodule "cl-lib-highlight"]
-	path = lib/cl-lib-highlight
-	url = git@github.com:skeeto/cl-lib-highlight.git
 [submodule "closql"]
 	path = lib/closql
 	url = git@github.com:emacscollective/closql.git

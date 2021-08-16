@@ -106,11 +106,6 @@
   (setq auto-revert-verbose nil
         global-auto-revert-non-file-buffers t))
 
-(use-package cl-lib-highlight
-  :config
-  :hook ((emacs-lisp-mode . cl-lib-highlight-initialize)
-         (emacs-lisp-mode . cl-lib-highlight-warn-cl-initialize)))
-
 (use-package corfu
   :init (corfu-global-mode))
 
