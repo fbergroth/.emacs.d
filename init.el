@@ -129,7 +129,8 @@
 
 (use-package embark
   :general
-  ("C-'" 'embark-act
+  ("C-." 'embark-act
+   "M-." 'embark-dwim
    "C-h B" 'embark-bindings)
   (:keymaps '(minibuffer-local-map)
             "C-o" 'embark-export)
@@ -146,7 +147,9 @@
         xref-show-definitions-function #'consult-xref)
 
   (setq consult-project-root-function
-        (fn! -some-> (project-current) (project-root))))
+        (lambda ()
+          (when-let (project (project-current))
+            (car (project-roots project))))))
 
 (use-package consult-dir
   :general
@@ -167,7 +170,7 @@
    "s" embark-consult-search-map)
   :after (embark consult)
   :demand t
-  :hook (embark-collect-mode . embark-consult-preview-minor-mode))
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package vertico
   :init
@@ -181,7 +184,7 @@
         completion-category-overrides '((file (styles . (partial-completion))))))
 
 (use-package dash
-  :config (dash-enable-font-lock))
+  :init (global-dash-fontify-mode))
 
 (use-package diff-hl
   :hook ((magit-pre-refresh-hook . diff-hl-magit-pre-refresh)
@@ -210,7 +213,7 @@
 
 (use-package dockerfile-mode)
 
-(use-package modus-vivendi-theme
+(use-package modus-themes
   :custom
   (modus-themes-slanted-constructs t)
   (modus-themes-bold-constructs t)
@@ -257,6 +260,7 @@
   :config
 
   (evil-ex-define-cmd "W" 'evil-write)
+  (define-key evil-normal-state-map (kbd "C-.") nil)
   (define-key evil-normal-state-map (kbd "M-.") nil))
 
 (use-package anzu
@@ -627,8 +631,9 @@
 (use-package project
   :general
   (my-leader
-   "p" project-prefix-map))
-
+    "p" project-prefix-map)
+  (project-prefix-map
+   "m" 'magit-project-status))
 
 (use-package vterm
   :preface
