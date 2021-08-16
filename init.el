@@ -178,10 +178,19 @@
 
 (use-package orderless
   :demand t
-  :init
+  :config
+  (orderless-define-completion-style orderless+initialism
+    (orderless-matching-styles '(orderless-initialism
+                                 orderless-literal
+                                 orderless-regexp)))
+
   (setq completion-styles '(orderless)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
+        completion-category-overrides
+          '((file (styles . (partial-completion)))
+            (command (styles orderless+initialism))
+            (symbol (styles orderless+initialism))
+            (variable (styles orderless+initialism)))))
 
 (use-package dash
   :init (global-dash-fontify-mode))
