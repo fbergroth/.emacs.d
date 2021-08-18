@@ -138,6 +138,8 @@
   ([remap switch-to-buffer] 'consult-buffer)
 
   :config
+  (add-hook 'minibuffer-setup-hook (lambda ()
+                                     (setq-local completion-in-region-function 'consult-completion-in-region)))
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
 
