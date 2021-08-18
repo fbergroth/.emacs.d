@@ -307,9 +307,6 @@
 [submodule "wgrep"]
 	path = lib/wgrep
 	url = git@github.com:mhayashi1120/Emacs-wgrep.git
-[submodule "which-key"]
-	path = lib/which-key
-	url = git@github.com:justbur/emacs-which-key.git
 [submodule "whitespace-cleanup-mode"]
 	path = lib/whitespace-cleanup-mode
 	url = git@github.com:purcell/whitespace-cleanup-mode.git

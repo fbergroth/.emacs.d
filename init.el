@@ -609,10 +609,6 @@
         web-mode-code-indent-offset 2)
   :mode (("\\.html\\'" . web-mode)))
 
-(use-package which-key
-  :config
-  (which-key-mode))
-
 (use-package whitespace
   :hook (prog-mode . whitespace-mode)
   :config
