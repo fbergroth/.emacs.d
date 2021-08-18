@@ -173,6 +173,16 @@
   :init
   (vertico-mode))
 
+(use-package vertico-directory
+  ;; More convenient directory navigation commands
+  :load-path "lib/vertico/extensions"
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
 (use-package orderless
   :demand t
   :config
