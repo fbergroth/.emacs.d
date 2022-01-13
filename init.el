@@ -25,6 +25,8 @@
 
 (setq create-lockfiles nil)
 
+(setq exec-path (append exec-path '("~/.npm-global/bin")))
+
 (defmacro fn! (&rest body) `(lambda () (interactive) ,body))
 
 (progn ;    `borg'
@@ -40,29 +42,28 @@
   (setq use-package-compute-statistics t)
   (require  'use-package))
 
+(require 'setup)
+
 (use-package gcmh
   :init
   (gcmh-mode))
 
-(use-package auto-compile
-  :config
-  (setq auto-compile-display-buffer nil)
-  (setq auto-compile-mode-line-counter t)
-  (setq auto-compile-source-recreate-deletes-dest t)
-  (setq auto-compile-toggle-deletes-nonlib-dest t)
-  (setq auto-compile-update-autoloads t))
+(setup auto-compile
+  (:option auto-compile-display-buffer nil
+           auto-compile-mode-line-counter t
+           auto-compile-source-recreate-deletes-dest t
+           auto-compile-toggle-deletes-nonlib-dest t
+           auto-compile-update-autoloads t))
 
-(use-package no-littering
-  :demand t)
+(setup (:require no-littering))
 
-(use-package custom
-  :config
+(setup
   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
   (when (file-exists-p custom-file)
     (load custom-file)))
 
-
 (use-package general
+  :disabled t
   :demand t
   :preface
   (general-evil-setup 'short)
@@ -99,15 +100,47 @@
 
 ;;; Long tail
 
-(use-package autorevert
-  :init
-  (global-auto-revert-mode)
-  :config
-  (setq auto-revert-verbose nil
-        global-auto-revert-non-file-buffers t))
+(setup autorevert
+  (:option auto-revert-verbose nil
+           global-auto-revert-non-file-buffers t)
+  (global-auto-revert-mode))
 
-(use-package corfu
-  :init (corfu-global-mode))
+(setup corfu
+  (:option corfu-auto t)
+  (:option corfu-quit-at-boundary t)
+  (corfu-global-mode))
+
+;; Add extensions
+(use-package cape
+  ;; Bind dedicated completion commands
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-symbol)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p i" . cape-ispell)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict))
+  :init
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;;(add-to-list 'completion-at-point-functions #'cape-ispell)
+  ;;(add-to-list 'completion-at-point-functions #'cape-dict)
+  ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+)
+(use-package kind-icon
+  :after corfu
+  :demand t
+  :custom
+  (kind-icon-default-face 'corfu-default)
+  :config
+  (add-hook 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package compile
   :config
@@ -123,30 +156,111 @@
   :init (marginalia-mode))
 
 (use-package embark
-  :general
-  ("C-." 'embark-act
-   "M-." 'embark-dwim
-   "C-h B" 'embark-bindings)
-  (:keymaps '(minibuffer-local-map)
-            "C-o" 'embark-export)
-  :init (setq prefix-help-command #'embark-prefix-help-command))
+  :demand t
+  :bind
+  (("C-." . embark-act)
+   ("M-." . embark-dwim)
+   ("C-h B" . embark-bindings)
+   :map minibuffer-local-map
+   ("C-o" . embark-export))
+  :config
+  (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package multiple-cursors
+  :bind
+  ("C-<" . mc/mark-previous-like-this)
+  ("C->" . mc/mark-next-like-this)
+  ("C-+" . mc/mark-next-like-this)
+  ("C-c C-<" . mc/mark-all-like-this))
+
+(use-package goggles
+  :hook ((prog-mode text-mode) . goggles-mode)
+  :config
+  (setq-default goggles-pulse nil)) ;; set to nil to disable pulsing
+
+(defun fb/consult-rg-region (arg)
+  (interactive "P")
+  (let* ((text (if (use-region-p)
+                   (buffer-substring-no-properties (region-beginning) (region-end))
+                 (thing-at-point 'symbol)))
+         (input (format (if (xor arg (use-region-p)) "%s" "\\b%s\\b") (regexp-quote text))))
+    (consult-ripgrep nil input)))
 
 (use-package consult
-  :general
-  (my-leader
-    "*" (fn! consult-ripgrep nil (thing-at-point 'symbol)))
-  ([remap switch-to-buffer] 'consult-buffer)
+  :demand t
+  ;; :general
+  ;; (my-leader
+  ;;   "*" (fn! consult-ripgrep nil (thing-at-point 'symbol)))
+  ;;   ;; "*" (fn! affe-grep nil (thing-at-point 'symbol)))
+  ;; ([remap switch-to-buffer] 'consult-buffer)
+
+
+  :bind (;; C-c bindings (mode-specific-map)
+         ("C-c h" . consult-history)
+         ("C-c m" . consult-mode-command)
+         ("C-c k" . consult-kmacro)
+         ;; C-x bindings (ctl-x-map)
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ("<help> a" . consult-apropos)            ;; orig. apropos-command
+         ;; M-g bindings (goto-map)
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+         ;; M-s bindings (search-map)
+         ("M-s d" . consult-find)
+         ("M-s D" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi))           ;; needed by consult-line to detect isearch
 
   :config
   (add-hook 'minibuffer-setup-hook (lambda ()
                                      (setq-local completion-in-region-function 'consult-completion-in-region)))
+;; (setup
+;;   (:with-hook minibuffer-setup-hook
+;;     (:local-set completion-in-region-function 'consult-completion-in-region)))
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
 
   (setq consult-project-root-function
         (lambda ()
           (when-let (project (project-current))
-            (car (project-roots project))))))
+            (project-root project)))))
+
+
+
+(setup consult-dir
+  (:with-map vertico-map
+    (:bind "M-," consult-dir
+           "M-j" consult-dir-jump-file)))
 
 (use-package consult-dir
   :general
@@ -155,6 +269,7 @@
             "M-j" 'consult-dir-jump-file))
 
 (use-package affe
+  :disabled t
   :after orderless
   :config
   (setq affe-regexp-function #'orderless-pattern-compiler
@@ -162,9 +277,6 @@
   (setf (alist-get #'affe-grep consult-config) `(:preview-key ,(kbd "M-."))))
 
 (use-package embark-consult
-  :general
-  (my-leader
-   "s" embark-consult-search-map)
   :after (embark consult)
   :demand t
   :hook (embark-collect-mode . consult-preview-at-point-mode))
@@ -199,6 +311,43 @@
             (symbol (styles orderless+initialism))
             (variable (styles orderless+initialism)))))
 
+(use-package reformatter
+  :demand t
+  :config
+
+  (defvar-local my/autoformat t)
+
+  (defun my/autoformat ()
+    (when my/autoformat
+      (treefmt)))
+
+  (defun my/autoformat-before-save ()
+    (add-hook 'before-save-hook 'my/autoformat -10 t))
+
+  (reformatter-define treefmt
+    :program "treefmt"
+    :args (list "-v" "--stdin" buffer-file-name))
+
+  :hook
+  (python-mode . my/autoformat-before-save))
+
+(custom-set-variables
+ '(ibuffer-formats
+   '((mark modified read-only locked " "
+           (name 18 18 :left :elide)
+           " "
+           (size 9 -1 :right)
+           " "
+           (mode 16 16 :left :elide)
+           " " project-file-relative))))
+(use-package ibuffer-project
+  :init
+  (add-hook 'ibuffer-hook
+          (lambda ()
+            (setq ibuffer-filter-groups (ibuffer-project-generate-filter-groups))
+            (unless (eq ibuffer-sorting-mode 'project-file-relative)
+              (ibuffer-do-sort-by-project-file-relative)))))
+
 (use-package dash
   :init (global-dash-fontify-mode))
 
@@ -208,35 +357,58 @@
          (dired-mode . diff-hl-dired-mode))
   :init (global-diff-hl-mode))
 
-(use-package dired
-  :init
-  (setq dired-auto-revert-buffer t)
-  (setq dired-dwim-target t)
-  (setq dired-listing-switches "-alhFv --group-directories-first"))
+
+(setup dired
+  (:also-load dired-x)
+  (:option dired-auto-revert-buffer t
+           dired-dwim-target t
+           dired-listing-switches "-alhFv --group-directories-first"
+           dired-omit-verbose nil)
+  (:hook dired-omit-mode))
+
+;; (use-package dired
+;;   :init
+;;   (setq dired-auto-revert-buffer t)
+;;   (setq dired-dwim-target t)
+;;   (setq dired-listing-switches "-alhFv --group-directories-first"))
 
 (use-package default-text-scale
   :demand t
   :config
   (default-text-scale-mode))
 
-(use-package dired-x
-  :hook (dired-mode . dired-omit-mode)
-  :config
-  (setq dired-omit-verbose nil))
+;; (use-package dired-x
+;;   :hook (dired-mode . dired-omit-mode)
+;;   :config
+;;   (setq dired-omit-verbose nil))
 
-(use-package diredfl
-  :hook (dired-mode . diredfl-mode))
+(setup diredfl
+  (:hook-into dired-mode))
+
+;; (use-package diredfl
+;;   :hook (dired-mode . diredfl-mode))
 
 (use-package dockerfile-mode)
 
 (use-package modus-themes
   :custom
-  (modus-themes-slanted-constructs t)
+  (modus-themes-italic-constructs t)
   (modus-themes-bold-constructs t)
   (modus-themes-fringes 'subtle)
-  (modus-themes-variable-pitch-headings t)
+  ;; (modus-themes-headings 'variable-pitch)
+  (modus-themes-mode-line '(accented borderless))
+  (modus-themes-prompts '(intense bold))
+  (modus-themes-region '(bg-only accented))
   :init
   (modus-themes-load-vivendi))
+
+
+(setup ediff
+  (:with-hook ediff-quit-hook
+    (:hook winner-undo))
+  (:option ediff-diff-options "-w"
+           ediff-split-window-function 'split-window-horizontally
+           ediff-window-setup-function 'ediff-setup-windows-plain))
 
 (use-package ediff
   :hook (ediff-quit . winner-undo)
@@ -262,6 +434,7 @@
   :init (eros-mode))
 
 (use-package evil
+  :disabled t
   :custom
   (evil-cross-lines t)
   (evil-ex-substitute-global t)
@@ -272,7 +445,7 @@
   (evil-want-C-w-in-emacs-state t)
   (evil-want-keybinding nil)
   (evil-undo-system 'undo-redo)
-  :init (evil-mode)
+  :init ; (evil-mode)
   :config
 
   (evil-ex-define-cmd "W" 'evil-write)
@@ -332,10 +505,16 @@
   (:keymap 'js-mode-map
             [remap js-find-symbol] 'xref-find-definitions))
 
-(defun my/eglot-fmt-before-save ()
-  (add-hook 'before-save-hook 'eglot-format-buffer nil t))
+
+(defun consult--preview-p ()
+  (when-let (win (active-minibuffer-window))
+    (not (eq nil (buffer-local-value
+                  'consult--preview-function
+                  (window-buffer win))))))
+
 (defun my/eglot-ensure ()
-  (when buffer-file-name
+  (when (and buffer-file-name
+             (not (consult--preview-p)))
     (eglot-ensure)))
 
 (use-package cc-mode
@@ -343,28 +522,217 @@
   (c++-mode . electric-pair-mode)
   (c++-mode . yas-minor-mode))
 
+
+(defun my/cleanup-gfm (string)
+  (thread-last string
+    (replace-regexp-in-string "[\\\\]\\([][!\"#$%&'()*+,./:;<=>?@\\^_`{|}~-]\\)" "\\1")
+    (replace-regexp-in-string "\\\\$" "")
+    (string-replace "&nbsp;" " ")))
+
+
+(defun derp (proxy)
+;  (message "%S" (get-text-property 0 'eglot--lsp-item proxy))
+  (when-let* ((lsp-comp (get-text-property 0 'eglot--lsp-item proxy))
+              (data (plist-get lsp-comp :data))
+              (import-text (plist-get data :autoImportText)))
+    import-text))
+
+(defun my/eglot-capf-docsig (res)
+  (when res
+    (append res
+            (list
+             :company-docsig
+             (lambda (proxy)
+               (when-let* ((lsp-comp (get-text-property 0 'eglot--lsp-item proxy))
+                           (data (plist-get lsp-comp :data))
+                           (import-text (plist-get data :autoImportText)))
+                 import-text))))))
+
 (use-package eglot
+  :config
+  ;; (add-to-list 'eglot-server-programs
+  ;;              '(python-mode "pyright-langserver" "--stdio"))
+  ;; (add-to-list 'eglot-server-programs '(python-mode "pylsp" "-vvvvv"))
+
+
+  (advice-add 'eglot--format-markup :filter-return 'my/cleanup-gfm)
+  ;; (advice-add 'eglot-completion-at-point :filter-return 'my/eglot-capf-docsig)
+
   :general
   (my-leader
    :keymaps 'eglot-mode-map
    "=" '(eglot-format-buffer :wk "fmt"))
   :hook
   (python-mode . my/eglot-ensure)
-  (python-mode . my/eglot-fmt-before-save)
   (c++-mode . my/eglot-ensure)
-  (c++-mode . my/eglot-fmt-before-save)
   (elm-mode . my/eglot-ensure)
   :custom
   (eglot-autoshutdown t)
   (eglot-workspace-configuration
-   '((pyls . ((configurationSources . ["flake8"])
-              (plugins (flake8 (enabled . t))))))))
+   '((pylsp . ((configurationSources . ["flake8"])
+               (plugins . ((flake8 . ((enabled . t)))
+                           (pydocstyle . ((enabled . t))))))))))
+
+(use-package smartparens
+  :demand t
+  :config
+  (sp-use-smartparens-bindings)
+  (smartparens-global-mode))
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
+(use-package avy
+  :bind ("C-;" . avy-goto-char-timer))
+
+(use-package ace-window
+  :bind ("M-o" . ace-window))
+
+(use-package meow
+  :disabled t
+  :demand t
+  ;; :custom
+  ;; (meow-use-cursor-position-hack t)
+  :config
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("d" . dired-jump)
+   '("qr"  . restart-emacs)
+   `("bs" . ,(fn! switch-to-buffer "*scratch*"))
+   `("fi" . ,(fn! find-file user-init-file))
+   '("j" . join-line)
+ ;;  '("k" . popper-kill-latest-popup)
+   '("p" . "C-x p")
+   `("P" . ,project-prefix-map)
+   '("s" . fb/consult-rg-region)
+   '("w" . other-window)
+   '("W" . window-swap-states)
+   '("o" . "C-x 4")
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet)
+   '("vs" . magit-status)
+   '("vf" . magit-file-dispatch)
+   '("vd" . magit-dispatch)
+   '("vp" . magit-project-status)
+   )
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . ignore))
+
+  (meow-global-mode)
+  )
+
+
+
+(use-package popper
+  :bind (("C-`"   . popper-toggle-latest)
+         ("M-`"   . popper-cycle)
+         ("C-M-`" . popper-toggle-type))
+  :init
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          "^\\*vterm.*\\*$"  vterm-mode
+          help-mode
+          compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1))                ; For echo area hints
+
+(use-package nixpkgs-fmt
+  :hook (nix-mode . nixpkgs-fmt-on-save-mode))
+
+(use-package minions
+  :demand t
+  :config
+
+  (minions-mode)
+  )
 
 (use-package flyspell
   :config
   (setq flyspell-issue-message-flag nil
         flyspell-issue-welcome-flag nil)
-  (add-hook 'text-mode-hook 'flyspell-mode))
+  (define-key flyspell-mode-map (kbd "C-.") nil)
+  ;; (add-hook 'text-mode-hook 'flyspell-mode)
+  )
 
 (use-package flyspell-correct
   :general
@@ -445,7 +813,7 @@
    :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map)
    "m" 'macrostep-expand)
   :config
-  (evil-set-initial-state 'macrostep-mode 'motion)
+  (-set-initial-state 'macrostep-mode 'motion)
   (evil-make-overriding-map macrostep-keymap 'motion))
 
 (use-package magit
@@ -534,6 +902,13 @@
       (org-indent-mode -1)
       (set-window-fringes (selected-window) nil))))
 
+
+(use-package ob-ammonite
+  :after org
+  :demand t
+  :config
+  (setq ammonite-term-repl-auto-detect-predef-file nil))
+
 (use-package org-superstar
   :after org
   :config
@@ -557,6 +932,20 @@
                       default-directory
                       (lambda (d) (file-directory-p (expand-file-name ".venv" d))))))
       (pyvenv-activate (expand-file-name ".venv" root)))))
+
+
+(use-package typescript-mode)
+
+(define-derived-mode typescript-tsx-mode typescript-mode "tsx")
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
+(add-hook 'typescript-tsx-mode-hook 'prettier-js-mode)
+
+
+(use-package evil-matchit
+  :disabled t
+  :init (global-evil-matchit-mode))
+
+
 
 (use-package recentf
   :demand t
@@ -590,6 +979,7 @@
   (all-the-icons-scale-factor 1.0))
 
 (use-package doom-modeline
+  :disabled t
   :custom
   (doom-modeline-icon nil)
   (doom-modeline-height 25)
@@ -607,10 +997,23 @@
   :hook (tree-sitter-after-on . tree-sitter-hl-mode)
   :init
   (require 'tree-sitter-langs)
+  (tree-sitter-require 'tsx)
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx))
   (global-tree-sitter-mode))
 
 (use-package unfill
   :general ([remap fill-paragraph] 'unfill-toggle))
+
+(use-package kubel
+  :custom
+  (kubel-use-namespace-list 'on)
+  ;; (evil-define-key 'normal 'kubel-yaml-editing-mode "q" #'kill-current-buffer)
+  )
+
+(use-package kubel-evil
+  :disabled t
+  :demand t
+  :after kubel)
 
 (use-package web-mode
   :config
@@ -656,9 +1059,9 @@
   (vterm-mode . my-vterm-hook))
 
 
-(use-package vterm-toggle
-  :general
-  ("C-`" 'vterm-toggle))
+;; (use-package vterm-toggle
+;;   :general
+;;   ("C-`" 'vterm-toggle))
 
 (use-package esup
   :custom
@@ -708,6 +1111,54 @@
   :config
   (setq so-long-max-lines 100)
   (global-so-long-mode))
+
+(use-package envrc
+  :demand t
+  :init
+  (envrc-global-mode))
+
+(use-package dtache
+  :hook (after-init . dtache-setup)
+  :bind (([remap async-shell-command] . dtache-shell-command)
+         :map dtache-shell-mode-map
+         ("C-c C-q" . dtache-detach-dwim))
+
+  :config
+  (with-eval-after-load 'embark
+    (defvar embark-dtache-map (make-composed-keymap dtache-action-map embark-general-map))
+    (add-to-list 'embark-keymap-alist '(dtache . embark-dtache-map))))
+
+(use-package dtache-shell
+  :hook (after-init . dtache-shell-setup)
+  :bind (:map dtache-shell-mode-map
+         (("<S-return>" . dtache-shell-send-input)
+          ("<C-return>" . dtache-shell-attach)))
+  :config
+  (setq dtache-shell-history-file "~/.bash_history"))
+
+(use-package dtache-eshell
+  :hook (after-init . dtache-eshell-setup)
+  :bind (:map dtache-eshell-mode-map
+         (("<S-return>" . dtache-eshell-send-input)
+          ("<C-return>" . dtache-eshell-attach)
+          ("C-c C-q" . dtache-detach-dwim))))
+
+(use-package dtache-compile
+  :hook (after-init . dtache-compile-setup)
+  :bind (([remap compile] . dtache-compile)
+         ([remap recompile] . dtache-compile-recompile)
+         :map dtache-compilation-mode-map
+         ("C-c C-q" . dtache-detach-dwim)))
+
+(use-package dtache-consult
+  :after dtache
+  :bind ([remap dtache-open-session] . dtache-consult-session))
+
+(with-eval-after-load 'make-mode
+  (defun fb/unset-tabs (orig-fun &rest args)
+    (let ((indent-tabs-mode nil))
+      (apply orig-fun args)))
+  (advice-add 'makefile-append-backslash :around #'fb/unset-tabs))
 
 (progn ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file
