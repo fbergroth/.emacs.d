@@ -195,6 +195,9 @@
 [submodule "goggles"]
 	path = lib/goggles
 	url = git@github.com:minad/goggles.git
+[submodule "gumshoe"]
+	path = lib/gumshoe
+	url = git@github.com:Overdr0ne/gumshoe.git
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
 	url = git@github.com:haskell/haskell-mode.git
@@ -400,6 +403,9 @@
 [submodule "vertico"]
 	path = lib/vertico
 	url = git@github.com:minad/vertico.git
+[submodule "visual-regexp"]
+	path = lib/visual-regexp
+	url = git@github.com:benma/visual-regexp.el.git
 [submodule "vterm"]
 	path = lib/vterm
 	url = git@github.com:akermu/emacs-libvterm.git

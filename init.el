@@ -188,13 +188,6 @@
 
 (use-package consult
   :demand t
-  ;; :general
-  ;; (my-leader
-  ;;   "*" (fn! consult-ripgrep nil (thing-at-point 'symbol)))
-  ;;   ;; "*" (fn! affe-grep nil (thing-at-point 'symbol)))
-  ;; ([remap switch-to-buffer] 'consult-buffer)
-
-
   :bind (;; C-c bindings (mode-specific-map)
          ("C-c h" . consult-history)
          ("C-c m" . consult-mode-command)
@@ -257,16 +250,23 @@
 
 
 
-(setup consult-dir
-  (:with-map vertico-map
-    (:bind "M-," consult-dir
-           "M-j" consult-dir-jump-file)))
+;; (setup consult-dir
+;;   (:with-map vertico-map
+;;     (:bind "M-," consult-dir
+;;            "M-j" consult-dir-jump-file)))
 
 (use-package consult-dir
-  :general
-  (:keymaps '(vertico-map)
-            "M-," 'consult-dir
-            "M-j" 'consult-dir-jump-file))
+  :after vertico
+  :bind
+  (:map vertico-map
+        ("M-," . consult-dir)
+        ("M-j" . consult-dir-jump-file)))
+
+(use-package isearch
+  :custom
+  (lazy-count-prefix-format "%3s/%3s ")
+  (isearch-allow-scroll t)
+  (isearch-lazy-count t))
 
 (use-package affe
   :disabled t
@@ -366,12 +366,6 @@
            dired-omit-verbose nil)
   (:hook dired-omit-mode))
 
-;; (use-package dired
-;;   :init
-;;   (setq dired-auto-revert-buffer t)
-;;   (setq dired-dwim-target t)
-;;   (setq dired-listing-switches "-alhFv --group-directories-first"))
-
 (use-package default-text-scale
   :demand t
   :config
@@ -433,69 +427,6 @@
 (use-package eros
   :init (eros-mode))
 
-(use-package evil
-  :disabled t
-  :custom
-  (evil-cross-lines t)
-  (evil-ex-substitute-global t)
-  (evil-respect-visual-line-mode t)
-  (evil-symbol-word-search t)
-  (evil-want-C-i-jump nil)
-  (evil-want-C-u-scroll t)
-  (evil-want-C-w-in-emacs-state t)
-  (evil-want-keybinding nil)
-  (evil-undo-system 'undo-redo)
-  :init ; (evil-mode)
-  :config
-
-  (evil-ex-define-cmd "W" 'evil-write)
-  (define-key evil-normal-state-map (kbd "C-.") nil)
-  (define-key evil-normal-state-map (kbd "M-.") nil))
-
-(use-package anzu
-  :init (global-anzu-mode))
-
-(use-package evil-anzu
-  :demand t)
-
-(use-package evil-collection
-  :after evil
-  :general
-  (nmap evil-collection-unimpaired-mode-map
-    "M-n" 'evil-collection-unimpaired-next-error
-    "M-p" 'evil-collection-unimpaired-previous-error
-    "C-M-n" 'next-error
-    "C-M-p" 'previous-error)
-  :init (evil-collection-init))
-
-(use-package evil-ediff
-  :disabled t
-  :config
-  (evil-ediff-init))
-
-(use-package evil-multiedit
-  :demand t
-  :config
-  (setq evil-multiedit-follow-matches t)
-  (evil-multiedit-default-keybinds)
-
-  (defun my-eme-match-fn ()
-    (interactive)
-    (evil-multiedit-match-all)
-    (iedit-restrict-function))
-
-  (define-key evil-normal-state-map (kbd "M-r") #'my-eme-match-fn))
-
-(use-package evil-surround
-  :init
-  (global-evil-surround-mode)
-  (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
-  (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute))
-
-(use-package evil-visualstar
-  :init
-  (global-evil-visualstar-mode))
-
 (use-package executable
   :init
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p))
@@ -529,45 +460,21 @@
     (replace-regexp-in-string "\\\\$" "")
     (string-replace "&nbsp;" " ")))
 
-
-(defun derp (proxy)
-;  (message "%S" (get-text-property 0 'eglot--lsp-item proxy))
-  (when-let* ((lsp-comp (get-text-property 0 'eglot--lsp-item proxy))
-              (data (plist-get lsp-comp :data))
-              (import-text (plist-get data :autoImportText)))
-    import-text))
-
-(defun my/eglot-capf-docsig (res)
-  (when res
-    (append res
-            (list
-             :company-docsig
-             (lambda (proxy)
-               (when-let* ((lsp-comp (get-text-property 0 'eglot--lsp-item proxy))
-                           (data (plist-get lsp-comp :data))
-                           (import-text (plist-get data :autoImportText)))
-                 import-text))))))
+(use-package repeat
+  :demand t
+  :config
+  (repeat-mode))
 
 (use-package eglot
   :config
-  ;; (add-to-list 'eglot-server-programs
-  ;;              '(python-mode "pyright-langserver" "--stdio"))
-  ;; (add-to-list 'eglot-server-programs '(python-mode "pylsp" "-vvvvv"))
-
-
   (advice-add 'eglot--format-markup :filter-return 'my/cleanup-gfm)
-  ;; (advice-add 'eglot-completion-at-point :filter-return 'my/eglot-capf-docsig)
-
-  :general
-  (my-leader
-   :keymaps 'eglot-mode-map
-   "=" '(eglot-format-buffer :wk "fmt"))
   :hook
   (python-mode . my/eglot-ensure)
   (c++-mode . my/eglot-ensure)
   (elm-mode . my/eglot-ensure)
   :custom
   (eglot-autoshutdown t)
+  (eglot-events-buffer-size 0)
   (eglot-workspace-configuration
    '((pylsp . ((configurationSources . ["flake8"])
                (plugins . ((flake8 . ((enabled . t)))
@@ -582,8 +489,13 @@
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
-(use-package avy
-  :bind ("C-;" . avy-goto-char-timer))
+;(use-package avy
+;  :bind ("C-;" . avy-goto-char-timer))
+(use-package iedit
+  :demand t)
+
+(use-package iedit-rect
+  :demand t)
 
 (use-package ace-window
   :bind ("M-o" . ace-window))
@@ -817,11 +729,8 @@
   (evil-make-overriding-map macrostep-keymap 'motion))
 
 (use-package magit
-  :general
-  (my-leader
-    "g" 'magit-file-dispatch)
   :custom
-  (magit-define-global-key-bindings nil)
+;  (magit-define-global-key-bindings nil)
   (magit-repository-directories '(("~/code" . 1)))
   (magit-save-repository-buffers 'dontask)
   (magit-status-goto-file-position t)
@@ -1076,6 +985,22 @@
 (use-package rust-mode
   :init
   (setq rust-format-on-save t))
+
+(use-package flymake
+  :init
+  (defvar my-flymake-repeat-map (make-sparse-keymap))
+  :bind
+  (:map flymake-mode-map
+        ("C-c C-p" . flymake-goto-prev-error)
+        ("C-c C-n" . flymake-goto-next-error))
+  (:map my-flymake-repeat-map
+        ("C-p" . flymake-goto-prev-error)
+        ("C-n" . flymake-goto-next-error))
+  :hook
+  (prog-mode . flymake-mode)
+  :config
+  (put 'flymake-goto-next-error 'repeat-map 'my-flymake-repeat-map)
+  (put 'flymake-goto-prev-error 'repeat-map 'my-flymake-repeat-map))
 
 (use-package flymake-diagnostic-at-point
   :hook (flymake-mode . flymake-diagnostic-at-point-mode)
