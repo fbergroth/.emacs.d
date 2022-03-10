@@ -95,6 +95,9 @@
 [submodule "dumb-jump"]
 	path = lib/dumb-jump
 	url = git@github.com:jacktasia/dumb-jump.git
+[submodule "easy-kill"]
+	path = lib/easy-kill
+	url = git@github.com:leoliu/easy-kill.git
 [submodule "eglot"]
 	path = lib/eglot
 	url = git@github.com:joaotavora/eglot.git
@@ -174,6 +177,11 @@
 [submodule "flymake-diagnostic-at-point"]
 	path = lib/flymake-diagnostic-at-point
 	url = git@github.com:meqif/flymake-diagnostic-at-point.git
+[submodule "flymake-rest"]
+	path = lib/flymake-rest
+	url = git@github.com:mohkale/flymake-rest.git
+	load-path = .
+	load-path = checkers
 [submodule "flyspell-correct"]
 	path = lib/flyspell-correct
 	url = git@github.com:d12frosted/flyspell-correct.git
@@ -201,6 +209,9 @@
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
 	url = git@github.com:haskell/haskell-mode.git
+[submodule "helpful"]
+	path = lib/helpful
+	url = git@github.com:Wilfred/helpful.git
 [submodule "highlight-escape-sequences"]
 	path = lib/highlight-escape-sequences
 	url = git@github.com:dgutov/highlight-escape-sequences.git
@@ -325,6 +336,9 @@
 [submodule "parent-mode"]
 	path = lib/parent-mode
 	url = git@github.com:Fanael/parent-mode.git
+[submodule "pcmpl-args"]
+	path = lib/pcmpl-args
+	url = git@github.com:JonWaltman/pcmpl-args.el.git
 [submodule "pcre2el"]
 	path = lib/pcre2el
 	url = git@github.com:joddie/pcre2el.git
@@ -403,6 +417,8 @@
 [submodule "vertico"]
 	path = lib/vertico
 	url = git@github.com:minad/vertico.git
+	load-path = .
+	load-path = extensions
 [submodule "visual-regexp"]
 	path = lib/visual-regexp
 	url = git@github.com:benma/visual-regexp.el.git

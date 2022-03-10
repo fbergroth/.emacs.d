@@ -20,7 +20,6 @@
   (setq-default indent-tabs-mode nil)
   (setq-default indicate-empty-lines t)
   (blink-cursor-mode 0)
-  (fset 'yes-or-no-p #'y-or-n-p)
   (setq ring-bell-function 'ignore))
 
 (setq create-lockfiles nil)
@@ -69,18 +68,18 @@
   (general-evil-setup 'short)
 
   (general-create-definer
-   my-leader
-   :keymaps 'override
-   :states '(emacs normal visual motion insert)
-   :non-normal-prefix "C-SPC"
-   :prefix "SPC")
+    my-leader
+    :keymaps 'override
+    :states '(emacs normal visual motion insert)
+    :non-normal-prefix "C-SPC"
+    :prefix "SPC")
 
   (general-create-definer
-   my-mode-leader
-   :keymaps 'override
-   :states '(emacs normal visual motion insert)
-   :non-normal-prefix "C-,"
-   :prefix ",")
+    my-mode-leader
+    :keymaps 'override
+    :states '(emacs normal visual motion insert)
+    :non-normal-prefix "C-,"
+    :prefix ",")
 
   :config
   (my-leader
@@ -105,10 +104,37 @@
            global-auto-revert-non-file-buffers t)
   (global-auto-revert-mode))
 
-(setup corfu
-  (:option corfu-auto t)
-  (:option corfu-quit-at-boundary t)
+
+(use-package corfu
+  ;; TAB-and-Go customizations
+  :custom
+  (corfu-preselect-first nil) ;; Disable candidate preselection
+  (corfu-auto t)
+
+  ;; Use TAB for cycling, default is `corfu-complete'.
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous))
+
+  :init
   (corfu-global-mode))
+
+(use-package emacs
+  :init
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
+
+  ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+  ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (setq tab-always-indent 'complete))
 
 ;; Add extensions
 (use-package cape
@@ -133,7 +159,8 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-dict)
   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
-)
+  )
+
 (use-package kind-icon
   :after corfu
   :demand t
@@ -237,9 +264,9 @@
   :config
   (add-hook 'minibuffer-setup-hook (lambda ()
                                      (setq-local completion-in-region-function 'consult-completion-in-region)))
-;; (setup
-;;   (:with-hook minibuffer-setup-hook
-;;     (:local-set completion-in-region-function 'consult-completion-in-region)))
+  ;; (setup
+  ;;   (:with-hook minibuffer-setup-hook
+  ;;     (:local-set completion-in-region-function 'consult-completion-in-region)))
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
 
@@ -311,35 +338,24 @@
             (symbol (styles orderless+initialism))
             (variable (styles orderless+initialism)))))
 
+(setq set-mark-command-repeat-pop t)
+
 (use-package reformatter
   :demand t
   :config
 
-  (defvar-local my/autoformat t)
+  (reformatter-define python-black
+    :program "black"
+    :args `("-q" ,@(and buffer-file-name `("--fast" "--stdin-filename" ,buffer-file-name)) "-"))
 
-  (defun my/autoformat ()
-    (when my/autoformat
-      (treefmt)))
-
-  (defun my/autoformat-before-save ()
-    (add-hook 'before-save-hook 'my/autoformat -10 t))
-
-  (reformatter-define treefmt
-    :program "treefmt"
-    :args (list "-v" "--stdin" buffer-file-name))
+  (reformatter-define python-isort
+    :program "isort"
+    :args `("-q" "--profile" "black",@(and buffer-file-name `("--filename" ,buffer-file-name)) "-"))
 
   :hook
-  (python-mode . my/autoformat-before-save))
+  (python-mode . python-black-on-save-mode)
+  (python-mode . python-isort-on-save-mode))
 
-(custom-set-variables
- '(ibuffer-formats
-   '((mark modified read-only locked " "
-           (name 18 18 :left :elide)
-           " "
-           (size 9 -1 :right)
-           " "
-           (mode 16 16 :left :elide)
-           " " project-file-relative))))
 (use-package ibuffer-project
   :init
   (add-hook 'ibuffer-hook
@@ -362,7 +378,7 @@
   (:also-load dired-x)
   (:option dired-auto-revert-buffer t
            dired-dwim-target t
-           dired-listing-switches "-alhFv --group-directories-first"
+           dired-listing-switches "-AGFhlv --group-directories-first --time-style=long-iso"
            dired-omit-verbose nil)
   (:hook dired-omit-mode))
 
@@ -412,11 +428,25 @@
         ediff-window-setup-function 'ediff-setup-windows-plain))
 
 (use-package eldoc
-  :config (global-eldoc-mode))
+  :demand t
+  :custom
+  (eldoc-echo-area-use-multiline-p nil)
+  :config
+  (global-eldoc-mode))
 
 (use-package elide-head
   :init (add-hook 'prog-mode-hook #'elide-head))
 
+(use-package emacs
+  :bind
+  ([remap list-buffers] . ibuffer)
+  ([remap upcase-word] . upcase-dwim)
+  ([remap downcase-word] . downcase-dwim)
+  ([remap capitalize-word] . capitalize-dwim)
+  ([remap just-one-space] . cycle-spacing)
+  :custom
+  (use-short-answers t)
+  )
 
 (use-package prog-mode
   :config
@@ -426,6 +456,12 @@
 
 (use-package eros
   :init (eros-mode))
+
+
+
+
+
+
 
 (use-package executable
   :init
@@ -468,6 +504,7 @@
 (use-package eglot
   :config
   (advice-add 'eglot--format-markup :filter-return 'my/cleanup-gfm)
+  (push '(python-mode "pyright-langserver" "--stdio") eglot-server-programs)
   :hook
   (python-mode . my/eglot-ensure)
   (c++-mode . my/eglot-ensure)
@@ -481,6 +518,7 @@
                            (pydocstyle . ((enabled . t))))))))))
 
 (use-package smartparens
+  :disabled t
   :demand t
   :config
   (sp-use-smartparens-bindings)
@@ -489,8 +527,15 @@
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
-;(use-package avy
-;  :bind ("C-;" . avy-goto-char-timer))
+(use-package avy
+  :bind
+  ("M-j" . avy-goto-char-timer)
+;  ("M-g M-g" . avy-goto-line)
+  (:map isearch-mode-map
+        ("M-j" . avy-isearch))
+  :custom
+  (avy-timeout-seconds 0.3))
+
 (use-package iedit
   :demand t)
 
@@ -500,8 +545,102 @@
 (use-package ace-window
   :bind ("M-o" . ace-window))
 
+;; (use-package hideshow ; built-in
+;;   :commands (hs-cycle
+;;              hs-global-cycle)
+;;   :bind (:map prog-mode-map
+;;               ("C-<tab>" . hs-cycle)
+;;               ("<backtab>" . hs-global-cycle)
+;;               ("C-S-<iso-lefttab>" . hs-global-cycle))
+;;   :config
+
+;;   (defun hs-cycle (&optional level)
+;;     (interactive "p")
+;;     (if (= level 1)
+;;         (pcase last-command
+;;           ('hs-cycle
+;;            (hs-hide-level 1)
+;;            (setq this-command 'hs-cycle-children))
+;;           ('hs-cycle-children
+;;            ;;TODO: Fix this case. `hs-show-block' needs to be called twice to
+;;            ;;open all folds of the parent block.
+;;            (save-excursion (hs-show-block))
+;;            (hs-show-block)
+;;            (setq this-command 'hs-cycle-subtree))
+;;           ('hs-cycle-subtree
+;;            (hs-hide-block))
+;;           (_
+;;            (if (not (hs-already-hidden-p))
+;;                (hs-hide-block)
+;;              (hs-hide-level 1)
+;;              (setq this-command 'hs-cycle-children))))
+;;       (hs-hide-level level)
+;;       (setq this-command 'hs-hide-level)))
+
+;;   (defun hs-global-cycle ()
+;;     (interactive)
+;;     (pcase last-command
+;;       ('hs-global-cycle
+;;        (save-excursion (hs-show-all))
+;;        (setq this-command 'hs-global-show))
+;;       (_ (hs-hide-all)))))
+
+
+;; (use-package bicycle
+;;   :after outline
+;;   :bind (:map outline-minor-mode-map
+;;               ([C-tab] . bicycle-cycle)
+;;               ([S-tab] . bicycle-cycle-global)))
+
+;; (use-package prog-mode
+;;   :config
+;;   (add-hook 'prog-mode-hook 'outline-minor-mode)
+;;   (add-hook 'prog-mode-hook 'hs-minor-mode))
+
+;; (define-key key-translation-map "z" (lambda (_) (read-key) (read-key) (read-key) [24 11 11]))
+
+
+(defun meow-kp--read-event (prefix)
+  (cl-loop
+   with mods = '(control)
+   with mods-str = "C-"
+   for ev = (read-key (concat prefix mods-str))
+   if (eq ev ?g)       do (setq mods '(control meta) mods-str "C-M-")
+   else if (eq ev ?m)  do (setq mods '(meta)         mods-str "M-")
+   else if (eq ev ?\s) do (setq mods nil             mods-str "")
+   else return (event-convert-list (append mods (list ev)))))
+
+(defun meow-kp (_ignore)
+
+  (if (not (and meow-mode (member meow--current-state '(normal motion))))
+      [?\s]
+    (let ((meow--current-state 'keypad)
+          (events [])
+          (pending t)
+          (prefix "KEYPAD: "))
+      (while pending
+          (message "!! %s" (input-pending-p))
+        (setq events (vconcat events (list (meow-kp--read-event prefix)))
+              prefix (format "KEYPAD: %s " (key-description events)))
+        (let ((target (lookup-key global-map events)))
+          (when (or (null target)
+                    (integerp target)
+                    (commandp target))
+            (setq pending nil))))
+      events)))
+
+; (define-key key-translation-map (kbd "SPC") 'meow-kp)
+
+
+(use-package delsel
+
+  :demand tr
+  :config
+  (pending-delete-mode)
+  )
+
 (use-package meow
-  :disabled t
+;  :disabled t
   :demand t
   ;; :custom
   ;; (meow-use-cursor-position-hack t)
@@ -586,11 +725,12 @@
    '("L" . meow-right-expand)
    '("m" . meow-join)
    '("n" . meow-search)
+   `("N" . ,(lambda () (interactive) (meow--direction-backward) (meow-search nil)))
    '("o" . meow-block)
    '("O" . meow-to-block)
    '("p" . meow-yank)
    '("q" . meow-quit)
-   '("Q" . meow-goto-line)
+   ;; '("Q" . meow-goto-line)
    '("r" . meow-replace)
    '("R" . meow-swap-grab)
    '("s" . meow-kill)
@@ -608,8 +748,38 @@
    '("'" . repeat)
    '("<escape>" . ignore))
 
+  (meow-normal-define-key
+   '("Md" . meow-surround-delete))
+
+
   (meow-global-mode)
+  (meow-setup-indicator)
+  (setq meow-goto-line-function 'consult-goto-line)
   )
+
+(defun meow-surround-delete ()
+  (interactive)
+  (let* ((ch (meow-thing-prompt "Delete thing: "))
+         (inner (meow--parse-inner-of-thing-char ch))
+         (outer (meow--parse-bounds-of-thing-char ch)))
+    (delete-region (cdr inner) (cdr outer))
+    (delete-region (car outer) (car inner))
+
+
+    (meow--select
+     (list
+      '(select . surround)
+
+      (+ (car outer) (- (cdr inner) (car inner))))
+      (car outer)
+     )
+
+    ))
+
+
+
+
+
 
 
 
@@ -633,8 +803,10 @@
 
 (use-package minions
   :demand t
+  :custom
+  (minions-prominent-modes '(flymake-mode envrc-mode))
   :config
-
+  (push '(flymake-mode . nil) minions-available-modes)
   (minions-mode)
   )
 
@@ -833,6 +1005,7 @@
   (olivetti-body-width 0.7))
 
 (use-package pyvenv
+  :disabled t
   :hook (python-mode . my-pyvenv-activate-local)
   :preface
   (defun my-pyvenv-activate-local ()
@@ -911,7 +1084,8 @@
   (global-tree-sitter-mode))
 
 (use-package unfill
-  :general ([remap fill-paragraph] 'unfill-toggle))
+  :bind
+  ([remap fill-paragraph] . unfill-toggle))
 
 (use-package kubel
   :custom
@@ -940,10 +1114,6 @@
   :init (global-whitespace-cleanup-mode))
 
 (use-package winner
-  :general
-  (nmap
-   "C-w [" 'winner-undo
-   "C-w ]" 'winner-redo)
   :init (winner-mode))
 
 (use-package yaml-mode)
@@ -953,11 +1123,8 @@
   (define-key elm-mode-map (kbd "M-.") nil))
 
 (use-package project
-  :general
-  (my-leader
-    "p" project-prefix-map)
-  (project-prefix-map
-   "m" 'magit-project-status))
+
+  )
 
 (use-package vterm
   :preface
@@ -1018,14 +1185,8 @@
 (advice-add 'thing-at-point-bounds-of-url-at-point :around #'my-fix-thingatpt-url)
 
 (use-package python
-  :init
-  (defun fb/insert-set-trace ()
-    (interactive)
-    (insert "import pdb; pdb.set_trace()")
-    (newline nil t))
-  :general
-  (imap python-mode-map
-        "C-p" 'fb/insert-set-trace))
+  :config
+)
 
 (use-package dumb-jump
   :init
@@ -1039,6 +1200,11 @@
 
 (use-package envrc
   :demand t
+  :custom
+  (envrc-none-lighter nil)
+  (envrc-on-lighter '(" envrc"))
+  (envrc-error-lighter '((:propertize " envrc" face envrc-mode-line-error-face)))
+
   :init
   (envrc-global-mode))
 
@@ -1084,6 +1250,12 @@
     (let ((indent-tabs-mode nil))
       (apply orig-fun args)))
   (advice-add 'makefile-append-backslash :around #'fb/unset-tabs))
+
+
+(defun fb/test ()
+  (interactive)
+  (set-transient-map (let ((map (make-sparse-keymap)))
+                       (define-key map "Z" 'find-file))))
 
 (progn ;     startup
   (message "Loading %s...done (%.3fs)" user-init-file
